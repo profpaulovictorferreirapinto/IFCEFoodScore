@@ -2,7 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'IFCE Sabor na Tela',
+  title: 'IFCE FoodScore',
   description: 'Sistema de avaliação de refeições do IFCE Campus Itapipoca',
 };
 
