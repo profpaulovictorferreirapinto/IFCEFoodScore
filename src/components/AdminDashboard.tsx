@@ -73,7 +73,7 @@ export const AdminDashboard = () => {
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-b pb-8">
         <div className="flex items-center gap-4">
-          <IFCELogo className="h-16" />
+          <IFCELogo className="h-24 md:h-32" />
           <div>
             <h1 className="text-3xl font-bold text-primary">Painel da Cantina</h1>
             <p className="text-muted-foreground">Visão geral do feedback dos estudantes</p>

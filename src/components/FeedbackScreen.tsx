@@ -30,7 +30,7 @@ export const FeedbackScreen = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 max-w-4xl mx-auto w-full">
       <header className="text-center mb-12 space-y-6 flex flex-col items-center">
-        <IFCELogo className="h-24 md:h-32" />
+        <IFCELogo className="h-48 md:h-64" />
         <div className="space-y-2">
           <p className="text-xl md:text-2xl text-muted-foreground font-medium">O que você achou do prato de hoje?</p>
         </div>
