@@ -7,6 +7,7 @@ import { summarizeDailyFeedback } from '@/ai/flows/summarize-daily-feedback-flow
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Loader2, TrendingUp, Users, Star, MessageSquareQuote } from 'lucide-react';
 import { Button } from './ui/button';
+import { IFCELogo } from './IFCELogo';
 
 export const AdminDashboard = () => {
   const [dailyData, setDailyData] = useState<Evaluation[]>([]);
@@ -70,13 +71,16 @@ export const AdminDashboard = () => {
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-primary">Painel da Cantina</h1>
-          <p className="text-muted-foreground">Visão geral do feedback dos estudantes</p>
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-b pb-8">
+        <div className="flex items-center gap-4">
+          <IFCELogo className="h-16" />
+          <div>
+            <h1 className="text-3xl font-bold text-primary">Painel da Cantina</h1>
+            <p className="text-muted-foreground">Visão geral do feedback dos estudantes</p>
+          </div>
         </div>
         <div className="text-right">
-          <p className="font-medium text-sm text-muted-foreground uppercase tracking-widest">Data</p>
+          <p className="font-medium text-sm text-muted-foreground uppercase tracking-widest">Data de Hoje</p>
           <p className="text-xl font-bold">{new Date().toLocaleDateString('pt-BR')}</p>
         </div>
       </div>

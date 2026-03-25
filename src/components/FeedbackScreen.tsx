@@ -6,6 +6,7 @@ import { addEvaluation } from '@/lib/firebase';
 import { Card } from './ui/card';
 import { cn } from '@/lib/utils';
 import { CheckCircle2 } from 'lucide-react';
+import { IFCELogo } from './IFCELogo';
 
 export const FeedbackScreen = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -28,9 +29,12 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 max-w-4xl mx-auto w-full">
-      <header className="text-center mb-16 space-y-4">
-        <h1 className="text-4xl md:text-5xl font-bold text-primary">IFCE FoodScore</h1>
-        <p className="text-xl text-muted-foreground font-medium">O que você achou do prato de hoje?</p>
+      <header className="text-center mb-12 space-y-6 flex flex-col items-center">
+        <IFCELogo className="h-24 md:h-32" />
+        <div className="space-y-2">
+          <h1 className="text-4xl md:text-5xl font-bold text-primary">IFCE FoodScore</h1>
+          <p className="text-xl text-muted-foreground font-medium">O que você achou do prato de hoje?</p>
+        </div>
       </header>
 
       <div className="relative w-full">
@@ -61,7 +65,7 @@ export const FeedbackScreen = () => {
               <div className="w-full aspect-square max-w-[160px] drop-shadow-md group-hover:drop-shadow-xl transition-all">
                 <EmojiFace rating={val} />
               </div>
-              <span className="hidden md:block font-bold text-muted-foreground group-hover:text-primary transition-colors">
+              <span className="hidden md:block font-bold text-muted-foreground group-hover:text-primary transition-colors text-center">
                 {val === 1 && "Muito Ruim"}
                 {val === 2 && "Ruim"}
                 {val === 3 && "Médio"}
@@ -73,7 +77,7 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      <footer className="mt-24 text-center">
+      <footer className="mt-20 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted rounded-full">
           <div className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
           <span className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Totem de Avaliação IFCE Itapipoca</span>
