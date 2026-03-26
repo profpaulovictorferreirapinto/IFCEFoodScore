@@ -69,7 +69,8 @@ export const FeedbackScreen = () => {
     setDoc(newDocRef, ratingData)
       .then(() => {
         setSubmitted(true);
-        setTimeout(() => setSubmitted(false), 3000);
+        // Tempo aumentado para 5 segundos
+        setTimeout(() => setSubmitted(false), 5000);
       })
       .catch(async (err) => {
         const permissionError = new FirestorePermissionError({
@@ -105,7 +106,8 @@ export const FeedbackScreen = () => {
         setFeedbackContent("");
         setIsFeedbackModalOpen(false);
         setSubmitted(true);
-        setTimeout(() => setSubmitted(false), 3000);
+        // Tempo aumentado para 5 segundos
+        setTimeout(() => setSubmitted(false), 5000);
       })
       .catch(async (err) => {
         const permissionError = new FirestorePermissionError({
