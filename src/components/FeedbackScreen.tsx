@@ -59,7 +59,7 @@ export const FeedbackScreen = () => {
   };
 
   return (
-    <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center justify-between p-4 md:p-10">
+    <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-12 lg:p-16">
       {/* Success Message Overlay */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
@@ -70,7 +70,7 @@ export const FeedbackScreen = () => {
             <Heart className="absolute -top-4 -right-4 w-12 h-12 md:w-24 md:h-24 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-5xl md:text-8xl lg:text-9xl font-black text-[#379936] tracking-tighter uppercase mb-4 md:mb-8 select-none">
+          <h2 className="text-5xl md:text-8xl lg:text-9xl font-black text-[#379936] tracking-tighter uppercase mb-4 md:mb-8 select-none leading-none">
             Muito obrigado!
           </h2>
           <p className="text-xl md:text-4xl lg:text-5xl text-muted-foreground font-medium max-w-4xl leading-tight select-none">
@@ -83,18 +83,18 @@ export const FeedbackScreen = () => {
         </div>
       )}
 
-      {/* Header */}
-      <header className="text-center mt-2 md:mt-6 space-y-4 flex flex-col items-center w-full shrink-0">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#379936] tracking-tighter uppercase select-none leading-none">
-          IFCE FoodScore
-        </h1>
-        <p className="text-xl md:text-3xl lg:text-4xl text-muted-foreground font-medium px-4">
-          O que você achou do prato de hoje?
-        </p>
-      </header>
+      {/* Título - Empurrado para o topo com margem automática inferior */}
+      <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#379936] tracking-tighter uppercase select-none leading-none mb-auto">
+        IFCE FoodScore
+      </h1>
 
-      {/* Main Buttons Grid */}
-      <div className="w-full flex-1 flex items-center justify-center max-w-7xl mx-auto px-4 min-h-0">
+      {/* Pergunta - Centralizada entre o título e as carinhas via mb-auto */}
+      <p className="text-2xl md:text-4xl lg:text-5xl text-muted-foreground font-medium px-4 text-center mb-auto">
+        O que você achou do prato de hoje?
+      </p>
+
+      {/* Main Buttons Grid - Margem inferior fixa para aproximar o rodapé */}
+      <div className="w-full max-w-7xl mx-auto px-4 mb-8 md:mb-12">
         <div className="grid grid-cols-5 gap-4 md:gap-10 lg:gap-14 w-full">
           {[1, 2, 3, 4, 5].map((val) => (
             <button
@@ -106,7 +106,7 @@ export const FeedbackScreen = () => {
               <div className="w-full aspect-square drop-shadow-2xl group-hover:drop-shadow-[0_20px_30px_rgba(55,153,54,0.3)] transition-all">
                 <EmojiFace rating={val} />
               </div>
-              <span className="font-black text-[10px] sm:text-lg md:text-xl lg:text-3xl text-muted-foreground group-hover:text-[#379936] transition-colors text-center uppercase tracking-tight">
+              <span className="font-black text-[10px] sm:text-lg md:text-xl lg:text-2xl text-muted-foreground group-hover:text-[#379936] transition-colors text-center uppercase tracking-tight leading-tight">
                 {val === 1 && "Muito Ruim"}
                 {val === 2 && "Ruim"}
                 {val === 3 && "Médio"}
@@ -118,11 +118,11 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="mb-4 md:mb-8 text-center w-full shrink-0">
+      {/* Footer - Posicionado um pouco abaixo das carinhas */}
+      <footer className="shrink-0">
         <div className="inline-flex items-center gap-3 px-8 py-4 md:px-12 md:py-6 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
           <div className="w-3 h-3 md:w-5 md:h-5 bg-[#379936] rounded-full animate-pulse" />
-          <span className="text-xs md:text-xl font-bold text-muted-foreground uppercase tracking-widest">
+          <span className="text-xs md:text-lg font-bold text-muted-foreground uppercase tracking-widest">
             Totem de Avaliação • Campus Itapipoca
           </span>
         </div>
