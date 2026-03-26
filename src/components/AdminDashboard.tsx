@@ -1,8 +1,8 @@
-
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { getDailyEvaluations, Evaluation } from '@/lib/firebase';
+import React, { useState, useMemo } from 'react';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { summarizeDailyFeedback } from '@/ai/flows/summarize-daily-feedback-flow';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -10,31 +10,30 @@ import { Loader2, TrendingUp, Users, Star, MessageSquareQuote } from 'lucide-rea
 import { Button } from './ui/button';
 
 export const AdminDashboard = () => {
-  const [dailyData, setDailyData] = useState<Evaluation[]>([]);
-  const [loading, setLoading] = useState(true);
+  const firestore = useFirestore();
+  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+
+  const evaluationsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(
+      collection(firestore, "evaluations"),
+      where("date", "==", today)
+    );
+  }, [firestore, today]);
+
+  const { data: evaluations, isLoading } = useCollection(evaluationsQuery);
   const [summary, setSummary] = useState<string | null>(null);
   const [summarizing, setSummarizing] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const evals = await getDailyEvaluations();
-        setDailyData(evals);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+  const ratingsCount = useMemo(() => {
+    const counts = [0, 0, 0, 0, 0];
+    evaluations?.forEach(e => {
+      if (e.rating >= 1 && e.rating <= 5) {
+        counts[e.rating - 1]++;
       }
-    };
-    fetchData();
-  }, []);
-
-  const ratingsCount = [0, 0, 0, 0, 0];
-  dailyData.forEach(e => {
-    if (e.rating >= 1 && e.rating <= 5) {
-      ratingsCount[e.rating - 1]++;
-    }
-  });
+    });
+    return counts;
+  }, [evaluations]);
 
   const chartData = [
     { name: '1', count: ratingsCount[0], color: 'hsl(var(--chart-1))' },
@@ -44,16 +43,18 @@ export const AdminDashboard = () => {
     { name: '5', count: ratingsCount[4], color: 'hsl(var(--chart-5))' },
   ];
 
-  const average = dailyData.length > 0 
-    ? (dailyData.reduce((acc, curr) => acc + curr.rating, 0) / dailyData.length).toFixed(1)
-    : 0;
+  const average = useMemo(() => {
+    if (!evaluations || evaluations.length === 0) return "0";
+    const sum = evaluations.reduce((acc, curr) => acc + curr.rating, 0);
+    return (sum / evaluations.length).toFixed(1);
+  }, [evaluations]);
 
   const handleSummarize = async () => {
-    if (dailyData.length === 0) return;
+    if (!evaluations || evaluations.length === 0) return;
     setSummarizing(true);
     try {
       const result = await summarizeDailyFeedback({ 
-        evaluations: dailyData.map(d => d.rating) 
+        evaluations: evaluations.map(d => d.rating) 
       });
       setSummary(result.summary);
     } catch (err) {
@@ -63,7 +64,7 @@ export const AdminDashboard = () => {
     }
   };
 
-  if (loading) return (
+  if (isLoading) return (
     <div className="flex items-center justify-center min-h-screen">
       <Loader2 className="w-12 h-12 text-primary animate-spin" />
     </div>
@@ -95,7 +96,7 @@ export const AdminDashboard = () => {
             <Users className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dailyData.length}</div>
+            <div className="text-2xl font-bold">{evaluations?.length || 0}</div>
             <p className="text-xs text-muted-foreground">Votos registrados hoje</p>
           </CardContent>
         </Card>
@@ -163,7 +164,7 @@ export const AdminDashboard = () => {
                 variant="outline" 
                 size="sm" 
                 onClick={handleSummarize}
-                disabled={summarizing || dailyData.length === 0}
+                disabled={summarizing || !evaluations || evaluations.length === 0}
               >
                 {summarizing && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 Gerar Resumo

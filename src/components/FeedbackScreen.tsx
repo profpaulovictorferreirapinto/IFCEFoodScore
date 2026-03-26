@@ -1,21 +1,30 @@
-
 "use client";
 
 import React, { useState } from 'react';
 import { EmojiFace } from './EmojiFace';
-import { addEvaluation } from '@/lib/firebase';
+import { useFirestore } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { CheckCircle2, Heart } from 'lucide-react';
 
 export const FeedbackScreen = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const firestore = useFirestore();
 
   const handleRating = async (rating: number) => {
-    if (loading || submitted) return;
+    if (loading || submitted || !firestore) return;
     setLoading(true);
     try {
-      await addEvaluation(rating);
+      const now = new Date();
+      const dateStr = now.toISOString().split('T')[0];
+      
+      await addDoc(collection(firestore, "evaluations"), {
+        rating,
+        timestamp: serverTimestamp(),
+        date: dateStr,
+      });
+      
       setSubmitted(true);
       // Reseta após 3 segundos para a próxima pessoa
       setTimeout(() => setSubmitted(false), 3000);
