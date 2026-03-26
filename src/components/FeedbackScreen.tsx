@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -109,24 +108,24 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Overlay de Sucesso - Redimensionado para Tablet */}
+      {/* Overlay de Sucesso */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
-          <div className="relative mb-3">
-            <div className="bg-primary/10 p-2.5 rounded-full">
-              <CheckCircle2 className="w-8 h-8 text-primary" />
+          <div className="relative mb-2">
+            <div className="bg-primary/10 p-2 rounded-full">
+              <CheckCircle2 className="w-6 h-6 text-primary" />
             </div>
-            <Heart className="absolute -top-1 -right-1 w-3 h-3 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-1 -right-1 w-2.5 h-2.5 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-lg md:text-xl font-black text-primary tracking-tighter uppercase mb-0.5 select-none leading-none">
+          <h2 className="text-base md:text-lg font-black text-primary tracking-tighter uppercase mb-0.5 select-none leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-[10px] md:text-xs text-muted-foreground font-medium max-w-[200px] leading-tight select-none px-4">
+          <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium max-w-[180px] leading-tight select-none px-4">
             Sua opinião ajuda a melhorar nossa cantina.
           </p>
 
-          <div className="mt-4 h-0.5 w-16 bg-muted rounded-full overflow-hidden">
+          <div className="mt-3 h-0.5 w-12 bg-muted rounded-full overflow-hidden">
             <div className="h-full bg-primary animate-progress" />
           </div>
         </div>
@@ -139,8 +138,11 @@ export const FeedbackScreen = () => {
         </h1>
       </header>
 
+      {/* Espaçador Superior para centralizar a pergunta */}
+      <div className="flex-1" />
+
       {/* Pergunta Centralizada */}
-      <div className="flex-1 flex flex-col items-center justify-center">
+      <div className="shrink-0 flex flex-col items-center justify-center py-4">
         <div className="relative">
           {isUserLoading && !user && (
             <div className="absolute -top-6 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground text-[8px] uppercase font-bold tracking-widest animate-pulse whitespace-nowrap">
@@ -149,10 +151,13 @@ export const FeedbackScreen = () => {
             </div>
           )}
           <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground font-medium px-4 text-center leading-tight select-none">
-            O que você achou do prato de hoje?
+            O que você achou da refeição de hoje?
           </p>
         </div>
       </div>
+
+      {/* Espaçador Inferior para empurrar as carinhas para baixo */}
+      <div className="flex-1" />
 
       {/* Grid de Carinhas - Posicionado no Terço Inferior */}
       <div className="w-full max-w-6xl mx-auto px-4 mb-4">
@@ -180,7 +185,7 @@ export const FeedbackScreen = () => {
       </div>
 
       {/* Rodapé e Botão de Feedback */}
-      <footer className="shrink-0 flex flex-col items-center gap-3">
+      <footer className="shrink-0 flex flex-col items-center gap-3 mt-4">
         <Dialog open={isFeedbackModalOpen} onOpenChange={setIsFeedbackModalOpen}>
           <DialogTrigger asChild>
             <Button 
