@@ -107,25 +107,25 @@ export const FeedbackScreen = () => {
   };
 
   return (
-    <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Overlay de Sucesso */}
+    <div className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
+      {/* Overlay de Sucesso - Full Screen Takeover */}
       {submitted && (
-        <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
-          <div className="relative mb-2">
-            <div className="bg-primary/10 p-2 rounded-full">
-              <CheckCircle2 className="w-6 h-6 text-primary" />
+        <div className="fixed inset-0 z-[100] bg-background w-full h-full flex flex-col items-center justify-center animate-in fade-in duration-300 px-6 text-center">
+          <div className="relative mb-3">
+            <div className="bg-primary/10 p-2.5 rounded-full">
+              <CheckCircle2 className="w-7 h-7 text-primary" />
             </div>
-            <Heart className="absolute -top-1 -right-1 w-2.5 h-2.5 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-1 -right-1 w-3 h-3 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-base md:text-lg font-black text-primary tracking-tighter uppercase mb-0.5 select-none leading-none">
+          <h2 className="text-lg md:text-xl font-black text-primary tracking-tighter uppercase mb-1 select-none leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium max-w-[180px] leading-tight select-none px-4">
+          <p className="text-[10px] md:text-[11px] text-muted-foreground font-medium max-w-[200px] leading-tight select-none px-4">
             Sua opinião ajuda a melhorar nossa cantina.
           </p>
 
-          <div className="mt-3 h-0.5 w-12 bg-muted rounded-full overflow-hidden">
+          <div className="mt-4 h-1 w-16 bg-muted rounded-full overflow-hidden">
             <div className="h-full bg-primary animate-progress" />
           </div>
         </div>
