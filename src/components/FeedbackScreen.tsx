@@ -87,8 +87,8 @@ export const FeedbackScreen = () => {
         </h1>
       </header>
 
-      {/* Espaçador Superior para centralizar a pergunta proporcionalmente */}
-      <div className="flex-[1.5]" />
+      {/* Espaçador Superior 1 - Ajustado para centralização equilibrada */}
+      <div className="flex-[1]" />
 
       {/* Pergunta - Centralizada entre cabeçalho e carinhas */}
       <div className="shrink-0 w-full">
@@ -97,11 +97,11 @@ export const FeedbackScreen = () => {
         </p>
       </div>
 
-      {/* Espaçador Inferior igual ao superior */}
-      <div className="flex-1" />
+      {/* Espaçador Inferior 2 - Maior peso para empurrar as carinhas mais para baixo */}
+      <div className="flex-[3]" />
 
-      {/* Grid de Carinhas - Empurrada para o final da tela */}
-      <div className="w-full max-w-7xl mx-auto px-4 mb-8">
+      {/* Grid de Carinhas - Posicionado na extremidade inferior */}
+      <div className="w-full max-w-7xl mx-auto px-4 mb-4">
         <div className="grid grid-cols-5 gap-4 md:gap-10 lg:gap-14 w-full">
           {[1, 2, 3, 4, 5].map((val) => (
             <button
@@ -125,8 +125,8 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Rodapé - Pouco abaixo das carinhas */}
-      <footer className="shrink-0 mb-4 md:mb-2">
+      {/* Rodapé - Posicionado logo abaixo das carinhas */}
+      <footer className="shrink-0 mb-4 md:mb-6">
         <div className="inline-flex items-center gap-3 px-8 py-3 md:px-10 md:py-4 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
           <div className="w-3 h-3 md:w-4 md:h-4 bg-[#379936] rounded-full animate-pulse" />
           <span className="text-[10px] md:text-sm lg:text-base font-bold text-muted-foreground uppercase tracking-widest">
