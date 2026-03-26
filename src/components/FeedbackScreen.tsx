@@ -160,7 +160,7 @@ export const FeedbackScreen = () => {
       <div className="shrink-0 flex flex-col items-center gap-4 mb-8">
         <div className="flex items-center gap-2 text-muted-foreground mb-1">
           <Clock className="w-4 h-4" />
-          <span className="text-xs font-bold uppercase tracking-wider">Selecione o período em que foi servida a refeição:</span>
+          <span className="text-xs font-bold uppercase tracking-wider">Selecione a refeição que você quer avaliar:</span>
         </div>
         <div className="flex flex-wrap justify-center p-1 bg-muted/30 rounded-2xl border border-border/40 gap-1">
           {periods.map((p) => (
