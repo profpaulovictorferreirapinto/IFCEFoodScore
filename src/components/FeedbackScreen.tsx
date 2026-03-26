@@ -56,7 +56,7 @@ export const FeedbackScreen = () => {
   };
 
   return (
-    <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-12 lg:p-16">
+    <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
       {/* Success Message Overlay */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
@@ -80,29 +80,35 @@ export const FeedbackScreen = () => {
         </div>
       )}
 
-      {/* Título - Fixado no topo */}
-      <header className="shrink-0 mb-4">
+      {/* Cabeçalho */}
+      <header className="shrink-0 mb-2">
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#379936] tracking-tighter uppercase select-none leading-none">
           IFCE FoodScore
         </h1>
       </header>
 
-      {/* Pergunta - Ocupa o espaço central entre o título e as carinhas */}
-      <div className="flex-1 flex items-center justify-center w-full">
-        <p className="text-2xl md:text-4xl lg:text-5xl text-muted-foreground font-medium px-4 text-center">
+      {/* Espaçador Superior para centralizar a pergunta proporcionalmente */}
+      <div className="flex-[1.5]" />
+
+      {/* Pergunta - Centralizada entre cabeçalho e carinhas */}
+      <div className="shrink-0 w-full">
+        <p className="text-2xl md:text-4xl lg:text-5xl text-muted-foreground font-medium px-4 text-center leading-tight">
           O que você achou do prato de hoje?
         </p>
       </div>
 
-      {/* Main Buttons Grid - Posicionado bem mais abaixo */}
-      <div className="w-full max-w-7xl mx-auto px-4 mb-6 md:mb-8 mt-auto">
+      {/* Espaçador Inferior igual ao superior */}
+      <div className="flex-1" />
+
+      {/* Grid de Carinhas - Empurrada para o final da tela */}
+      <div className="w-full max-w-7xl mx-auto px-4 mb-8">
         <div className="grid grid-cols-5 gap-4 md:gap-10 lg:gap-14 w-full">
           {[1, 2, 3, 4, 5].map((val) => (
             <button
               key={val}
               disabled={loading || submitted}
               onClick={() => handleRating(val)}
-              className="flex flex-col items-center gap-4 md:gap-8 transition-all hover:scale-105 active:scale-95 group focus:outline-none"
+              className="flex flex-col items-center gap-4 md:gap-6 transition-all hover:scale-105 active:scale-95 group focus:outline-none"
             >
               <div className="w-full aspect-square drop-shadow-2xl group-hover:drop-shadow-[0_20px_30px_rgba(55,153,54,0.3)] transition-all">
                 <EmojiFace rating={val} />
@@ -119,11 +125,11 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Footer - Posicionado logo abaixo das carinhas, com margem mínima no fundo */}
-      <footer className="shrink-0 mb-4 md:mb-6">
-        <div className="inline-flex items-center gap-3 px-8 py-4 md:px-12 md:py-6 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
-          <div className="w-3 h-3 md:w-5 md:h-5 bg-[#379936] rounded-full animate-pulse" />
-          <span className="text-xs md:text-lg font-bold text-muted-foreground uppercase tracking-widest">
+      {/* Rodapé - Pouco abaixo das carinhas */}
+      <footer className="shrink-0 mb-4 md:mb-2">
+        <div className="inline-flex items-center gap-3 px-8 py-3 md:px-10 md:py-4 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
+          <div className="w-3 h-3 md:w-4 md:h-4 bg-[#379936] rounded-full animate-pulse" />
+          <span className="text-[10px] md:text-sm lg:text-base font-bold text-muted-foreground uppercase tracking-widest">
             Totem de Avaliação • Campus Itapipoca
           </span>
         </div>
