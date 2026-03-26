@@ -200,11 +200,11 @@ export const FeedbackScreen = () => {
                 <EmojiFace rating={val} />
               </div>
               <span className="font-black text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground group-hover:text-primary transition-colors text-center uppercase tracking-tighter leading-none select-none">
-                {val === 1 && "Muito Ruim"}
-                {val === 2 && "Ruim"}
-                {val === 3 && "Médio"}
-                {val === 4 && "Bom"}
-                {val === 5 && "Excelente"}
+                {val === 1 && "Detestei"}
+                {val === 2 && "Não gostei"}
+                {val === 3 && "Indiferente"}
+                {val === 4 && "Gostei"}
+                {val === 5 && "Adorei"}
               </span>
             </button>
           ))}

@@ -235,11 +235,11 @@ export const AdminDashboard = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="font-black uppercase text-[9px] text-right">
-                    {r.ratingValue === 1 && "Muito Ruim"}
-                    {r.ratingValue === 2 && "Ruim"}
-                    {r.ratingValue === 3 && "Médio"}
-                    {r.ratingValue === 4 && "Bom"}
-                    {r.ratingValue === 5 && "Excelente"}
+                    {r.ratingValue === 1 && "Detestei"}
+                    {r.ratingValue === 2 && "Não gostei"}
+                    {r.ratingValue === 3 && "Indiferente"}
+                    {r.ratingValue === 4 && "Gostei"}
+                    {r.ratingValue === 5 && "Adorei"}
                   </TableCell>
                 </TableRow>
               ))}
