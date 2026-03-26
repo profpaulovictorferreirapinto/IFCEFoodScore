@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -156,7 +155,7 @@ export const FeedbackScreen = () => {
         </h1>
       </header>
 
-      {/* Seletor de Período */}
+      {/* Seletor de Refeição */}
       <div className="shrink-0 flex flex-col items-center gap-4 mb-8">
         <div className="flex items-center gap-2 text-muted-foreground mb-1">
           <Clock className="w-4 h-4" />
@@ -264,8 +263,8 @@ export const FeedbackScreen = () => {
         </div>
       </footer>
 
-      {/* Crédito de Desenvolvimento */}
-      <div className="absolute bottom-4 right-6 text-[7px] md:text-[9px] text-muted-foreground/40 font-bold uppercase tracking-widest select-none pointer-events-none text-right leading-tight">
+      {/* Crédito de Desenvolvimento - Posicionado um pouco mais acima para visibilidade no tablet */}
+      <div className="absolute bottom-10 right-6 text-[7px] md:text-[9px] text-muted-foreground/40 font-bold uppercase tracking-widest select-none pointer-events-none text-right leading-tight">
         Desenvolvido por LaMMA <br className="md:hidden" /> (Laboratório Maker de Mecânica Aplicada)
       </div>
     </div>
