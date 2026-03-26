@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -23,18 +24,20 @@ export const FeedbackScreen = () => {
   }, [auth, user, isUserLoading]);
 
   const handleRating = (ratingValue: number) => {
-    // Garante que o sistema só salve se o banco estiver pronto e o usuário autenticado
     if (loading || submitted || !firestore || !user) return;
     setLoading(true);
     
     const ratingsCol = collection(firestore, "ratings");
     const newDocRef = doc(ratingsCol);
-    const dateStr = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const fullTimestamp = now.toISOString();
     
     const ratingData = {
       id: newDocRef.id,
       score: ratingValue,
       ratingDate: dateStr,
+      createdAt: fullTimestamp,
     };
 
     setDoc(newDocRef, ratingData)
@@ -61,20 +64,20 @@ export const FeedbackScreen = () => {
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
           <div className="relative mb-4 md:mb-6">
-            <div className="bg-primary/10 p-6 md:p-8 rounded-full">
-              <CheckCircle2 className="w-12 h-12 md:w-16 md:h-16 text-primary" />
+            <div className="bg-primary/10 p-4 md:p-6 rounded-full">
+              <CheckCircle2 className="w-10 h-10 md:w-12 md:h-12 text-primary" />
             </div>
-            <Heart className="absolute -top-1 -right-1 w-6 h-6 md:w-8 md:h-8 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-1 -right-1 w-5 h-5 md:w-6 md:h-6 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase mb-2 md:mb-4 select-none leading-none">
+          <h2 className="text-xl md:text-3xl lg:text-4xl font-black text-primary tracking-tighter uppercase mb-2 select-none leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-sm md:text-lg lg:text-xl text-muted-foreground font-medium max-w-lg leading-tight select-none px-4">
+          <p className="text-xs md:text-base lg:text-lg text-muted-foreground font-medium max-w-xs md:max-w-md leading-tight select-none px-4">
             Sua opinião é fundamental para melhorarmos nosso serviço.
           </p>
 
-          <div className="mt-6 md:mt-8 h-1 md:h-1.5 w-32 md:w-[200px] bg-muted rounded-full overflow-hidden">
+          <div className="mt-6 h-1 w-24 md:w-32 bg-muted rounded-full overflow-hidden">
             <div className="h-full bg-primary animate-progress" />
           </div>
         </div>
@@ -87,12 +90,11 @@ export const FeedbackScreen = () => {
         </h1>
       </header>
 
-      {/* Espaçador Superior */}
+      {/* Espaçador Superior Equilibrado */}
       <div className="flex-1" />
 
       {/* Pergunta Centralizada */}
       <div className="shrink-0 w-full relative">
-        {/* Indicador de carregamento de conexão se o usuário ainda não estiver pronto */}
         {isUserLoading && !user && (
           <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground text-xs uppercase font-bold tracking-widest animate-pulse">
             <Loader2 className="w-3 h-3 animate-spin" />
@@ -104,7 +106,7 @@ export const FeedbackScreen = () => {
         </p>
       </div>
 
-      {/* Espaçador Inferior */}
+      {/* Espaçador Inferior Equilibrado */}
       <div className="flex-1" />
 
       {/* Grid de Carinhas na parte inferior */}
@@ -135,7 +137,7 @@ export const FeedbackScreen = () => {
       {/* Rodapé colado às carinhas */}
       <footer className="shrink-0 mb-4 md:mb-6 mt-4">
         <div className="inline-flex items-center gap-3 px-6 py-2 md:px-8 md:py-3 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
-          <div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-primary rounded-full animate-pulse" />
+          <div className="w-2.5 h-2.5 md:w-3 h-3 bg-primary rounded-full animate-pulse" />
           <span className="text-[9px] md:text-xs lg:text-sm font-bold text-muted-foreground uppercase tracking-widest">
             Totem de Avaliação • Campus Itapipoca
           </span>

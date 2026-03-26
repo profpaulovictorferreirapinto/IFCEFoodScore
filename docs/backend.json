@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Rating": {
@@ -7,9 +8,10 @@
       "properties": {
         "id": { "type": "string" },
         "score": { "type": "number" },
-        "ratingDate": { "type": "string", "format": "date" }
+        "ratingDate": { "type": "string", "format": "date" },
+        "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["id", "score", "ratingDate"]
+      "required": ["id", "score", "ratingDate", "createdAt"]
     },
     "DailySummary": {
       "title": "DailySummary",
