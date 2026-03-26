@@ -25,7 +25,7 @@ export const FeedbackScreen = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedbackContent, setFeedbackContent] = useState("");
-  const [isFeedbackModalOpen, setIsFeedbackFeedbackModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   
   const firestore = useFirestore();
   const auth = useAuth();
@@ -45,13 +45,12 @@ export const FeedbackScreen = () => {
     const newDocRef = doc(ratingsCol);
     const now = new Date();
     const dateStr = now.toISOString().split('T')[0];
-    const fullTimestamp = now.toISOString();
     
     const ratingData = {
       id: newDocRef.id,
       ratingValue: ratingValue,
       ratingDate: dateStr,
-      createdAt: fullTimestamp,
+      createdAt: now.toISOString(),
     };
 
     setDoc(newDocRef, ratingData)
@@ -91,7 +90,7 @@ export const FeedbackScreen = () => {
     setDoc(newDocRef, feedbackData)
       .then(() => {
         setFeedbackContent("");
-        setIsFeedbackFeedbackModalOpen(false);
+        setIsFeedbackModalOpen(false);
         setSubmitted(true);
         setTimeout(() => setSubmitted(false), 3000);
       })
@@ -110,24 +109,24 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Overlay de Sucesso */}
+      {/* Overlay de Sucesso - Redimensionado para Tablet */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
-          <div className="relative mb-4">
-            <div className="bg-primary/10 p-3 rounded-full">
-              <CheckCircle2 className="w-10 h-10 text-primary" />
+          <div className="relative mb-3">
+            <div className="bg-primary/10 p-2.5 rounded-full">
+              <CheckCircle2 className="w-8 h-8 text-primary" />
             </div>
-            <Heart className="absolute -top-1 -right-1 w-4 h-4 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-1 -right-1 w-3 h-3 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-xl md:text-2xl font-black text-primary tracking-tighter uppercase mb-1 select-none leading-none">
+          <h2 className="text-lg md:text-xl font-black text-primary tracking-tighter uppercase mb-0.5 select-none leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-xs md:text-sm text-muted-foreground font-medium max-w-xs leading-tight select-none px-4">
+          <p className="text-[10px] md:text-xs text-muted-foreground font-medium max-w-[200px] leading-tight select-none px-4">
             Sua opinião ajuda a melhorar nossa cantina.
           </p>
 
-          <div className="mt-4 h-1 w-20 bg-muted rounded-full overflow-hidden">
+          <div className="mt-4 h-0.5 w-16 bg-muted rounded-full overflow-hidden">
             <div className="h-full bg-primary animate-progress" />
           </div>
         </div>
@@ -135,43 +134,40 @@ export const FeedbackScreen = () => {
 
       {/* Cabeçalho */}
       <header className="shrink-0 flex flex-col items-center">
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-primary tracking-tighter uppercase select-none leading-none">
+        <h1 className="text-4xl md:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none">
           IFCE FoodScore
         </h1>
       </header>
 
-      {/* Espaçadores flexíveis para centralizar a pergunta */}
-      <div className="flex-1" />
-
       {/* Pergunta Centralizada */}
-      <div className="shrink-0 w-full relative">
-        {isUserLoading && !user && (
-          <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground text-[10px] uppercase font-bold tracking-widest animate-pulse">
-            <Loader2 className="w-2.5 h-2.5 animate-spin" />
-            Sincronizando...
-          </div>
-        )}
-        <p className="text-2xl md:text-3xl lg:text-4xl text-muted-foreground font-medium px-4 text-center leading-tight select-none">
-          O que você achou do prato de hoje?
-        </p>
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <div className="relative">
+          {isUserLoading && !user && (
+            <div className="absolute -top-6 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground text-[8px] uppercase font-bold tracking-widest animate-pulse whitespace-nowrap">
+              <Loader2 className="w-2 h-2 animate-spin" />
+              Sincronizando...
+            </div>
+          )}
+          <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground font-medium px-4 text-center leading-tight select-none">
+            O que você achou do prato de hoje?
+          </p>
+        </div>
       </div>
 
-      <div className="flex-1" />
-
-      {/* Grid de Carinhas na parte inferior */}
-      <div className="w-full max-w-6xl mx-auto px-4 mb-2">
+      {/* Grid de Carinhas - Posicionado no Terço Inferior */}
+      <div className="w-full max-w-6xl mx-auto px-4 mb-4">
         <div className="grid grid-cols-5 gap-4 md:gap-6 lg:gap-8 w-full">
           {[1, 2, 3, 4, 5].map((val) => (
             <button
               key={val}
               disabled={loading || submitted || isUserLoading || !user}
               onClick={() => handleRating(val)}
-              className="flex flex-col items-center gap-3 md:gap-4 transition-all hover:scale-105 active:scale-95 group focus:outline-none disabled:opacity-50"
+              className="flex flex-col items-center gap-2 md:gap-3 transition-all hover:scale-105 active:scale-95 group focus:outline-none disabled:opacity-50"
             >
-              <div className="w-full aspect-square drop-shadow-2xl group-hover:drop-shadow-[0_20px_30px_rgba(55,153,54,0.3)] transition-all">
+              <div className="w-full aspect-square drop-shadow-2xl group-hover:drop-shadow-[0_15px_25px_rgba(55,153,54,0.3)] transition-all">
                 <EmojiFace rating={val} />
               </div>
-              <span className="font-black text-[9px] sm:text-xs md:text-sm lg:text-base text-muted-foreground group-hover:text-primary transition-colors text-center uppercase tracking-tight leading-tight select-none">
+              <span className="font-black text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground group-hover:text-primary transition-colors text-center uppercase tracking-tighter leading-none select-none">
                 {val === 1 && "Muito Ruim"}
                 {val === 2 && "Ruim"}
                 {val === 3 && "Médio"}
@@ -183,29 +179,29 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Rodapé com Botão de Feedback */}
-      <footer className="shrink-0 mb-4 md:mb-6 mt-6 flex flex-col items-center gap-4">
-        <Dialog open={isFeedbackModalOpen} onOpenChange={setIsFeedbackFeedbackModalOpen}>
+      {/* Rodapé e Botão de Feedback */}
+      <footer className="shrink-0 flex flex-col items-center gap-3">
+        <Dialog open={isFeedbackModalOpen} onOpenChange={setIsFeedbackModalOpen}>
           <DialogTrigger asChild>
             <Button 
               variant="outline" 
-              className="rounded-full border-primary/30 text-primary hover:bg-primary hover:text-white transition-all gap-2 px-6 py-6 font-bold uppercase tracking-tight text-xs"
+              className="rounded-full border-primary/20 text-primary hover:bg-primary hover:text-white transition-all gap-2 px-5 py-5 font-bold uppercase tracking-tight text-[10px] h-auto"
             >
-              <MessageSquareText className="w-4 h-4" />
+              <MessageSquareText className="w-3.5 h-3.5" />
               Sugestões ou Reclamações
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="sm:max-w-[450px]">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-black uppercase text-primary">Sua opinião</DialogTitle>
-              <DialogDescription className="text-muted-foreground">
-                Como podemos melhorar a nossa cantina? Escreva abaixo sua sugestão ou reclamação de forma anônima.
+              <DialogTitle className="text-xl font-black uppercase text-primary">Sua opinião</DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground">
+                Escreva abaixo sua mensagem de forma anônima.
               </DialogDescription>
             </DialogHeader>
-            <div className="py-4">
+            <div className="py-2">
               <Textarea 
                 placeholder="Escreva aqui sua mensagem..."
-                className="min-h-[150px] text-lg p-4 rounded-xl border-primary/20 focus-visible:ring-primary"
+                className="min-h-[120px] text-base p-4 rounded-xl border-primary/20 focus-visible:ring-primary"
                 value={feedbackContent}
                 onChange={(e) => setFeedbackContent(e.target.value)}
               />
@@ -214,7 +210,7 @@ export const FeedbackScreen = () => {
               <Button 
                 onClick={handleSendFeedback} 
                 disabled={!feedbackContent.trim() || loading}
-                className="w-full font-bold uppercase py-6 text-lg"
+                className="w-full font-bold uppercase py-5 text-base h-auto"
               >
                 {loading ? <Loader2 className="animate-spin mr-2" /> : "Enviar Feedback"}
               </Button>
@@ -222,9 +218,9 @@ export const FeedbackScreen = () => {
           </DialogContent>
         </Dialog>
 
-        <div className="inline-flex items-center gap-3 px-6 py-2 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
-          <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-          <span className="text-[8px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest select-none">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
+          <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+          <span className="text-[7px] md:text-[9px] font-bold text-muted-foreground uppercase tracking-widest select-none">
             Totem de Avaliação • Campus Itapipoca
           </span>
         </div>

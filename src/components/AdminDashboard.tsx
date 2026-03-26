@@ -26,14 +26,14 @@ import {
   ChartTooltipContent 
 } from "@/components/ui/chart";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Cell } from "recharts";
-import { MessageSquare, Star, TrendingUp, Clock, History } from 'lucide-react';
+import { MessageSquare, Star, TrendingUp, Clock, History, LayoutDashboard } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 export const AdminDashboard = () => {
   const firestore = useFirestore();
 
-  // Queries memoizadas para o Firestore
+  // Queries para as coleções do Firestore
   const ratingsQuery = useMemoFirebase(() => 
     query(collection(firestore, "dailyMealRatings"), orderBy("createdAt", "desc"), limit(100)),
     [firestore]
@@ -57,7 +57,7 @@ export const AdminDashboard = () => {
     };
   }, [ratings]);
 
-  // Dados para o gráfico de barras (Média por Dia)
+  // Dados para o gráfico de evolução
   const chartData = useMemo(() => {
     if (!ratings) return [];
     const grouped = ratings.slice(0, 100).reduce((acc: any, curr) => {
@@ -79,23 +79,28 @@ export const AdminDashboard = () => {
   return (
     <div className="p-4 md:p-8 space-y-8 max-w-7xl mx-auto bg-[#F8FAFC] min-h-screen">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black text-primary uppercase tracking-tighter leading-none">
-            Relatório de Satisfação
-          </h1>
-          <p className="text-muted-foreground font-medium text-sm">
-            Monitoramento em tempo real das refeições do IFCE Campus Itapipoca
-          </p>
+        <div className="flex items-center gap-4">
+          <div className="bg-primary p-3 rounded-2xl shadow-lg shadow-primary/20">
+            <LayoutDashboard className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-black text-primary uppercase tracking-tighter leading-none">
+              IFCE Campus Itapipoca
+            </h1>
+            <p className="text-muted-foreground font-medium text-sm">
+              Dashboard de Monitoramento de Refeições
+            </p>
+          </div>
         </div>
         <Badge variant="outline" className="w-fit px-4 py-1 text-[10px] font-bold uppercase tracking-widest border-primary/20 text-primary bg-white shadow-sm">
           <Clock className="w-3 h-3 mr-2 animate-pulse" />
-          Conectado ao Live Server
+          Live Update Ativo
         </Badge>
       </header>
 
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-none shadow-xl bg-white">
+        <Card className="border-none shadow-xl bg-white overflow-hidden group">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-2">
               <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
@@ -103,12 +108,12 @@ export const AdminDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-5xl font-black text-primary">{stats.avg}</div>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">Escala de 1 a 5</p>
+            <div className="text-5xl font-black text-primary group-hover:scale-110 transition-transform origin-left">{stats.avg}</div>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">Média ponderada (1 a 5)</p>
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl bg-white">
+        <Card className="border-none shadow-xl bg-white overflow-hidden group">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-primary" />
@@ -116,21 +121,21 @@ export const AdminDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-5xl font-black text-primary">{stats.count}</div>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">Participação Estudantil</p>
+            <div className="text-5xl font-black text-primary group-hover:scale-110 transition-transform origin-left">{stats.count}</div>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">Amostra coletada no Totem</p>
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl bg-white">
+        <Card className="border-none shadow-xl bg-white overflow-hidden group">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-2">
               <MessageSquare className="w-4 h-4 text-secondary" />
-              Sugestões/Queixas
+              Sugestões & Queixas
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-5xl font-black text-primary">{feedbacks?.length || 0}</div>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">Relatos Recebidos</p>
+            <div className="text-5xl font-black text-primary group-hover:scale-110 transition-transform origin-left">{feedbacks?.length || 0}</div>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">Feedback qualitativo</p>
           </CardContent>
         </Card>
       </div>
@@ -139,8 +144,8 @@ export const AdminDashboard = () => {
         {/* Gráfico de Evolução */}
         <Card className="border-none shadow-xl bg-white">
           <CardHeader>
-            <CardTitle className="text-lg font-black uppercase tracking-tight text-primary">Histórico por Data</CardTitle>
-            <CardDescription>Média de avaliação nos últimos dias registrados</CardDescription>
+            <CardTitle className="text-lg font-black uppercase tracking-tight text-primary">Evolução por Data</CardTitle>
+            <CardDescription>Média das notas registradas nos últimos dias</CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
              {chartData.length > 0 ? (
@@ -172,14 +177,14 @@ export const AdminDashboard = () => {
           <CardHeader>
             <CardTitle className="text-lg font-black uppercase tracking-tight text-primary flex items-center gap-2">
               <MessageSquare className="w-5 h-5" />
-              Feedbacks dos Alunos
+              Mural de Sugestões
             </CardTitle>
-            <CardDescription>Mensagens enviadas de forma anônima no totem</CardDescription>
+            <CardDescription>Mensagens anônimas enviadas pelos alunos</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
               {feedbacks?.map((f) => (
-                <div key={f.id} className="p-4 bg-muted/20 rounded-xl border border-border/40 hover:border-primary/20 transition-colors">
+                <div key={f.id} className="p-4 bg-muted/20 rounded-xl border border-border/40 hover:border-primary/20 transition-all">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-[9px] font-black uppercase text-muted-foreground bg-white px-2 py-0.5 rounded-full border border-border/40">
                       {f.createdAt ? format(new Date(f.createdAt), 'dd MMM • HH:mm', { locale: ptBR }) : '-'}
@@ -191,7 +196,7 @@ export const AdminDashboard = () => {
               {(!feedbacks || feedbacks.length === 0) && (
                 <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
                   <MessageSquare className="w-8 h-8 opacity-20 mb-2" />
-                  <p className="italic text-sm">Nenhuma sugestão ainda.</p>
+                  <p className="italic text-sm">Nenhuma mensagem ainda.</p>
                 </div>
               )}
             </div>
@@ -199,19 +204,19 @@ export const AdminDashboard = () => {
         </Card>
       </div>
 
-      {/* Tabela Detalhada de Votos */}
+      {/* Tabela Detalhada */}
       <Card className="border-none shadow-xl bg-white">
         <CardHeader className="border-b border-border/40">
           <div className="flex items-center gap-2">
             <History className="w-5 h-5 text-primary" />
-            <CardTitle className="text-lg font-black uppercase tracking-tight text-primary">Log de Votos</CardTitle>
+            <CardTitle className="text-lg font-black uppercase tracking-tight text-primary">Histórico Completo de Votos</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="pt-6">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-border/80">
-                <TableHead className="font-bold uppercase text-[10px] tracking-widest">Carimbo de Data/Hora</TableHead>
+                <TableHead className="font-bold uppercase text-[10px] tracking-widest">Data e Hora</TableHead>
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest">Nota</TableHead>
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest text-right">Classificação</TableHead>
               </TableRow>
@@ -239,6 +244,13 @@ export const AdminDashboard = () => {
                   </TableCell>
                 </TableRow>
               ))}
+              {(!ratings || ratings.length === 0) && (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center py-8 text-muted-foreground italic">
+                    Nenhum voto registrado ainda.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>
