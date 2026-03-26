@@ -108,24 +108,24 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Overlay de Sucesso - Full Screen Takeover Gigante */}
+      {/* Overlay de Sucesso - Full Screen Takeover */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-10 text-center">
-          <div className="relative mb-10 md:mb-16">
-            <div className="bg-primary/10 p-10 md:p-14 rounded-full shadow-[0_0_50px_rgba(55,153,54,0.2)]">
-              <CheckCircle2 className="w-24 h-24 md:w-40 md:h-40 text-primary" />
+          <div className="relative mb-8 md:mb-12">
+            <div className="bg-primary/10 p-8 md:p-12 rounded-full shadow-[0_0_40px_rgba(55,153,54,0.15)]">
+              <CheckCircle2 className="w-20 h-20 md:w-32 md:h-32 text-primary" />
             </div>
-            <Heart className="absolute -top-4 -right-4 w-12 h-12 md:w-20 md:h-20 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-3 -right-3 w-10 h-10 md:w-16 md:h-16 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-primary tracking-tighter uppercase mb-6 select-none leading-none">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-primary tracking-tighter uppercase mb-4 select-none leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-xl md:text-3xl lg:text-4xl text-muted-foreground font-semibold max-w-[600px] md:max-w-[900px] leading-tight select-none px-4">
-            Sua opinião ajuda a melhorar nossa cantina.
+          <p className="text-lg md:text-2xl lg:text-3xl text-muted-foreground font-semibold max-w-[500px] md:max-w-[800px] leading-tight select-none px-4">
+            Sua opinião ajuda a melhorar nossa refeição.
           </p>
 
-          <div className="mt-16 md:mt-24 h-3 w-64 md:w-96 bg-muted rounded-full overflow-hidden shadow-inner">
+          <div className="mt-12 md:mt-20 h-2.5 w-48 md:w-72 bg-muted rounded-full overflow-hidden shadow-inner">
             <div className="h-full bg-primary animate-progress" />
           </div>
         </div>
