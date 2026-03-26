@@ -20,6 +20,11 @@
           "type": "number",
           "description": "Numerical rating from 1 to 5."
         },
+        "period": {
+          "type": "string",
+          "description": "The meal period (Manhã, Tarde, Noite).",
+          "enum": ["Manhã", "Tarde", "Noite"]
+        },
         "createdAt": {
           "type": "string",
           "description": "Full timestamp of the rating.",
@@ -30,6 +35,7 @@
         "id",
         "ratingDate",
         "ratingValue",
+        "period",
         "createdAt"
       ]
     },

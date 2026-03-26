@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -7,7 +8,7 @@ import { collection, doc, setDoc } from 'firebase/firestore';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
-import { CheckCircle2, Heart, Loader2, MessageSquareText } from 'lucide-react';
+import { CheckCircle2, Heart, Loader2, MessageSquareText, Clock } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -20,11 +21,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
+const getInitialPeriod = () => {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return "Manhã";
+  if (hour >= 12 && hour < 18) return "Tarde";
+  return "Noite";
+};
+
 export const FeedbackScreen = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedbackContent, setFeedbackContent] = useState("");
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [period, setPeriod] = useState<string>(getInitialPeriod());
   
   const firestore = useFirestore();
   const auth = useAuth();
@@ -49,6 +58,7 @@ export const FeedbackScreen = () => {
       id: newDocRef.id,
       ratingValue: ratingValue,
       ratingDate: dateStr,
+      period: period,
       createdAt: now.toISOString(),
     };
 
@@ -108,59 +118,72 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Overlay de Sucesso - Full Screen Takeover */}
+      {/* Overlay de Sucesso */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-10 text-center">
-          <div className="relative mb-8 md:mb-12">
-            <div className="bg-primary/10 p-8 md:p-12 rounded-full shadow-[0_0_40px_rgba(55,153,54,0.15)]">
-              <CheckCircle2 className="w-20 h-20 md:w-32 md:h-32 text-primary" />
+          <div className="relative mb-6">
+            <div className="bg-primary/10 p-8 rounded-full shadow-[0_0_40px_rgba(55,153,54,0.15)]">
+              <CheckCircle2 className="w-20 h-20 text-primary" />
             </div>
-            <Heart className="absolute -top-3 -right-3 w-10 h-10 md:w-16 md:h-16 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-2 -right-2 w-8 h-8 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-primary tracking-tighter uppercase mb-4 select-none leading-none">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-primary tracking-tighter uppercase mb-4 leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-lg md:text-2xl lg:text-3xl text-muted-foreground font-semibold max-w-[500px] md:max-w-[800px] leading-tight select-none px-4">
+          <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground font-semibold max-w-[600px] leading-tight px-4">
             Sua opinião ajuda a melhorar nossa refeição.
           </p>
 
-          <div className="mt-12 md:mt-20 h-2.5 w-48 md:w-72 bg-muted rounded-full overflow-hidden shadow-inner">
+          <div className="mt-12 h-2 w-48 bg-muted rounded-full overflow-hidden shadow-inner">
             <div className="h-full bg-primary animate-progress" />
           </div>
         </div>
       )}
 
       {/* Cabeçalho */}
-      <header className="shrink-0 flex flex-col items-center">
-        <h1 className="text-4xl md:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none">
+      <header className="shrink-0 flex flex-col items-center mb-8">
+        <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter uppercase select-none leading-none">
           IFCE FoodScore
         </h1>
       </header>
 
-      {/* Espaçador Superior */}
+      {/* Seletor de Período */}
+      <div className="shrink-0 flex flex-col items-center gap-4 mb-8">
+        <div className="flex items-center gap-2 text-muted-foreground mb-1">
+          <Clock className="w-4 h-4" />
+          <span className="text-xs font-bold uppercase tracking-wider">Selecione o período:</span>
+        </div>
+        <div className="flex p-1 bg-muted/30 rounded-2xl border border-border/40">
+          {["Manhã", "Tarde", "Noite"].map((p) => (
+            <button
+              key={p}
+              onClick={() => setPeriod(p)}
+              className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-tight transition-all ${
+                period === p 
+                ? "bg-white text-primary shadow-md scale-105" 
+                : "text-muted-foreground hover:bg-white/50"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="flex-1" />
 
       {/* Pergunta Centralizada */}
       <div className="shrink-0 flex flex-col items-center justify-center py-4">
-        <div className="relative">
-          {isUserLoading && !user && (
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground text-[8px] uppercase font-bold tracking-widest animate-pulse whitespace-nowrap">
-              <Loader2 className="w-2 h-2 animate-spin" />
-              Sincronizando...
-            </div>
-          )}
-          <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground font-medium px-4 text-center leading-tight select-none">
-            O que você achou da refeição de hoje?
-          </p>
-        </div>
+        <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground font-medium px-4 text-center leading-tight select-none">
+          O que você achou da refeição de hoje?
+        </p>
       </div>
 
-      {/* Espaçador Inferior */}
       <div className="flex-1" />
 
       {/* Grid de Carinhas */}
-      <div className="w-full max-w-6xl mx-auto px-4 mb-4">
+      <div className="w-full max-w-6xl mx-auto px-4 mb-8">
         <div className="grid grid-cols-5 gap-4 md:gap-6 lg:gap-8 w-full">
           {[1, 2, 3, 4, 5].map((val) => (
             <button
@@ -185,12 +208,12 @@ export const FeedbackScreen = () => {
       </div>
 
       {/* Rodapé */}
-      <footer className="shrink-0 flex flex-col items-center gap-3 mt-4">
+      <footer className="shrink-0 flex flex-col items-center gap-4 mt-auto pb-6">
         <Dialog open={isFeedbackModalOpen} onOpenChange={setIsFeedbackModalOpen}>
           <DialogTrigger asChild>
             <Button 
               variant="outline" 
-              className="rounded-full border-primary/20 text-primary hover:bg-primary hover:text-white transition-all gap-2 px-5 py-5 font-bold uppercase tracking-tight text-[10px] h-auto"
+              className="rounded-full border-primary/20 text-primary hover:bg-primary hover:text-white transition-all gap-2 px-6 py-6 font-bold uppercase tracking-tight text-[10px] h-auto shadow-sm"
             >
               <MessageSquareText className="w-3.5 h-3.5" />
               Sugestões ou Reclamações
@@ -200,7 +223,7 @@ export const FeedbackScreen = () => {
             <DialogHeader>
               <DialogTitle className="text-xl font-black uppercase text-primary">Sua opinião</DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Escreva abaixo sua mensagem de forma anônima.
+                Escreva abaixo sua mensagem de forma anônima sobre a refeição do período: <span className="font-bold text-primary">{period}</span>.
               </DialogDescription>
             </DialogHeader>
             <div className="py-2">

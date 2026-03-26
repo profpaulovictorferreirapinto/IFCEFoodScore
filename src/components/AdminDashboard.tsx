@@ -33,7 +33,6 @@ import { ptBR } from 'date-fns/locale';
 export const AdminDashboard = () => {
   const firestore = useFirestore();
 
-  // Queries para as coleções do Firestore
   const ratingsQuery = useMemoFirebase(() => 
     query(collection(firestore, "dailyMealRatings"), orderBy("createdAt", "desc"), limit(100)),
     [firestore]
@@ -47,7 +46,6 @@ export const AdminDashboard = () => {
   const { data: ratings, isLoading: loadingRatings } = useCollection(ratingsQuery);
   const { data: feedbacks, isLoading: loadingFeedbacks } = useCollection(feedbacksQuery);
 
-  // Estatísticas Rápidas
   const stats = useMemo(() => {
     if (!ratings || ratings.length === 0) return { avg: 0, count: 0 };
     const sum = ratings.reduce((acc, r) => acc + (r.ratingValue || 0), 0);
@@ -57,7 +55,6 @@ export const AdminDashboard = () => {
     };
   }, [ratings]);
 
-  // Dados para o gráfico de evolução
   const chartData = useMemo(() => {
     if (!ratings) return [];
     const grouped = ratings.slice(0, 100).reduce((acc: any, curr) => {
@@ -98,7 +95,6 @@ export const AdminDashboard = () => {
         </Badge>
       </header>
 
-      {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-none shadow-xl bg-white overflow-hidden group">
           <CardHeader className="pb-2">
@@ -141,7 +137,6 @@ export const AdminDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Gráfico de Evolução */}
         <Card className="border-none shadow-xl bg-white">
           <CardHeader>
             <CardTitle className="text-lg font-black uppercase tracking-tight text-primary">Evolução por Data</CardTitle>
@@ -172,7 +167,6 @@ export const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Últimos Feedbacks Qualitativos */}
         <Card className="border-none shadow-xl bg-white">
           <CardHeader>
             <CardTitle className="text-lg font-black uppercase tracking-tight text-primary flex items-center gap-2">
@@ -204,7 +198,6 @@ export const AdminDashboard = () => {
         </Card>
       </div>
 
-      {/* Tabela Detalhada */}
       <Card className="border-none shadow-xl bg-white">
         <CardHeader className="border-b border-border/40">
           <div className="flex items-center gap-2">
@@ -217,6 +210,7 @@ export const AdminDashboard = () => {
             <TableHeader>
               <TableRow className="hover:bg-transparent border-border/80">
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest">Data e Hora</TableHead>
+                <TableHead className="font-bold uppercase text-[10px] tracking-widest">Período</TableHead>
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest">Nota</TableHead>
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest text-right">Classificação</TableHead>
               </TableRow>
@@ -226,6 +220,11 @@ export const AdminDashboard = () => {
                 <TableRow key={r.id} className="border-border/40 hover:bg-muted/10 transition-colors">
                   <TableCell className="font-medium text-xs text-muted-foreground">
                     {r.createdAt ? format(new Date(r.createdAt), 'dd/MM/yyyy HH:mm:ss') : '-'}
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground px-2 py-1 bg-muted rounded-lg">
+                      {r.period || "-"}
+                    </span>
                   </TableCell>
                   <TableCell>
                     <Badge className={`font-black ${
@@ -246,7 +245,7 @@ export const AdminDashboard = () => {
               ))}
               {(!ratings || ratings.length === 0) && (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center py-8 text-muted-foreground italic">
+                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground italic">
                     Nenhum voto registrado ainda.
                   </TableCell>
                 </TableRow>
