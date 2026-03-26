@@ -32,6 +32,17 @@ export const FeedbackScreen = () => {
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
 
+  // Bloqueio do botão "Voltar" do navegador
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.href);
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   useEffect(() => {
     if (auth && !user && !isUserLoading) {
       initiateAnonymousSignIn(auth);
@@ -115,20 +126,20 @@ export const FeedbackScreen = () => {
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-10 text-center">
           <div className="relative mb-6">
-            <div className="bg-primary/10 p-8 rounded-full shadow-[0_0_40px_rgba(55,153,54,0.15)]">
-              <CheckCircle2 className="w-20 h-20 text-primary" />
+            <div className="bg-primary/10 p-6 rounded-full shadow-[0_0_30px_rgba(55,153,54,0.1)]">
+              <CheckCircle2 className="w-16 h-16 text-primary" />
             </div>
-            <Heart className="absolute -top-2 -right-2 w-8 h-8 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-1 -right-1 w-6 h-6 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-primary tracking-tighter uppercase mb-4 leading-none">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase mb-3 leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground font-semibold max-w-[600px] leading-tight px-4">
+          <p className="text-base md:text-lg lg:text-xl text-muted-foreground font-semibold max-w-[500px] leading-tight px-4">
             Sua opinião ajuda a melhorar nossa refeição.
           </p>
 
-          <div className="mt-12 h-2 w-48 bg-muted rounded-full overflow-hidden shadow-inner">
+          <div className="mt-8 h-1.5 w-32 bg-muted rounded-full overflow-hidden shadow-inner">
             <div className="h-full bg-primary animate-progress" />
           </div>
         </div>
