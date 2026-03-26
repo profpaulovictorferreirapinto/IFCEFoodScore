@@ -93,8 +93,8 @@ export const FeedbackScreen = () => {
         O que você achou do prato de hoje?
       </p>
 
-      {/* Main Buttons Grid - Margem inferior fixa para aproximar o rodapé */}
-      <div className="w-full max-w-7xl mx-auto px-4 mb-8 md:mb-12">
+      {/* Main Buttons Grid - Margem inferior reduzida para descer a grade e aproximar o rodapé */}
+      <div className="w-full max-w-7xl mx-auto px-4 mb-4 md:mb-6 mt-4">
         <div className="grid grid-cols-5 gap-4 md:gap-10 lg:gap-14 w-full">
           {[1, 2, 3, 4, 5].map((val) => (
             <button
@@ -118,8 +118,8 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Footer - Posicionado um pouco abaixo das carinhas */}
-      <footer className="shrink-0">
+      {/* Footer - Posicionado logo abaixo das carinhas */}
+      <footer className="shrink-0 mb-4">
         <div className="inline-flex items-center gap-3 px-8 py-4 md:px-12 md:py-6 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
           <div className="w-3 h-3 md:w-5 md:h-5 bg-[#379936] rounded-full animate-pulse" />
           <span className="text-xs md:text-lg font-bold text-muted-foreground uppercase tracking-widest">
