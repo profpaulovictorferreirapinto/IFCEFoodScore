@@ -3,11 +3,11 @@
 
 import React, { useState, useMemo } from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, query, where, orderBy } from 'firebase/firestore';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { summarizeDailyFeedback } from '@/ai/flows/summarize-daily-feedback-flow';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { Loader2, TrendingUp, Users, Star, MessageSquareQuote } from 'lucide-react';
+import { Loader2, TrendingUp, Users, Star, MessageSquareQuote, Calendar } from 'lucide-react';
 import { Button } from './ui/button';
 
 export const AdminDashboard = () => {
@@ -18,7 +18,8 @@ export const AdminDashboard = () => {
     if (!firestore) return null;
     return query(
       collection(firestore, "dailyMealRatings"),
-      where("ratingDate", "==", today)
+      where("ratingDate", "==", today),
+      orderBy("createdAt", "desc")
     );
   }, [firestore, today]);
 
@@ -38,15 +39,15 @@ export const AdminDashboard = () => {
   }, [evaluations]);
 
   const chartData = [
-    { name: '1', count: ratingsCount[0], color: 'hsl(var(--chart-1))' },
-    { name: '2', count: ratingsCount[1], color: 'hsl(var(--chart-2))' },
-    { name: '3', count: ratingsCount[2], color: 'hsl(var(--chart-3))' },
-    { name: '4', count: ratingsCount[3], color: 'hsl(var(--chart-4))' },
-    { name: '5', count: ratingsCount[4], color: 'hsl(var(--chart-5))' },
+    { name: 'Muito Ruim', count: ratingsCount[0], color: '#EF4444' },
+    { name: 'Ruim', count: ratingsCount[1], color: '#F97316' },
+    { name: 'Médio', count: ratingsCount[2], color: '#FACC15' },
+    { name: 'Bom', count: ratingsCount[3], color: '#4ADE80' },
+    { name: 'Excelente', count: ratingsCount[4], color: '#17CFCF' },
   ];
 
   const average = useMemo(() => {
-    if (!evaluations || evaluations.length === 0) return "0";
+    if (!evaluations || evaluations.length === 0) return "0.0";
     const sum = evaluations.reduce((acc, curr) => acc + curr.ratingValue, 0);
     return (sum / evaluations.length).toFixed(1);
   }, [evaluations]);
@@ -82,70 +83,80 @@ export const AdminDashboard = () => {
           <div className="h-12 w-px bg-border hidden md:block" />
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-primary">Painel da Cantina</h1>
-            <p className="text-muted-foreground text-lg">Visão geral do feedback dos estudantes</p>
+            <p className="text-muted-foreground text-lg">Análise de satisfação dos alunos</p>
           </div>
         </div>
-        <div className="text-right">
-          <p className="font-medium text-sm text-muted-foreground uppercase tracking-widest">Data de Hoje</p>
-          <p className="text-2xl font-bold">{new Date().toLocaleDateString('pt-BR')}</p>
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-border/50 flex items-center gap-4">
+          <Calendar className="text-primary w-6 h-6" />
+          <div className="text-right">
+            <p className="font-bold text-xs text-muted-foreground uppercase tracking-widest">Avaliações de Hoje</p>
+            <p className="text-xl font-black">{new Date().toLocaleDateString('pt-BR')}</p>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Card className="shadow-md">
+        <Card className="shadow-md overflow-hidden group">
+          <div className="h-1 bg-primary/20 group-hover:bg-primary transition-colors" />
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-base font-bold uppercase tracking-tight">Total de Votos</CardTitle>
-            <Users className="w-5 h-5 text-muted-foreground" />
+            <CardTitle className="text-sm font-bold uppercase tracking-tighter text-muted-foreground">Volume de Votos</CardTitle>
+            <Users className="w-5 h-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-black">{evaluations?.length || 0}</div>
-            <p className="text-sm text-muted-foreground mt-1">Votos registrados hoje</p>
+            <div className="text-5xl font-black tracking-tighter">{evaluations?.length || 0}</div>
+            <p className="text-xs font-medium text-muted-foreground mt-2">Estudantes participaram hoje</p>
           </CardContent>
         </Card>
-        <Card className="shadow-md">
+
+        <Card className="shadow-md overflow-hidden group">
+          <div className="h-1 bg-secondary/20 group-hover:bg-secondary transition-colors" />
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-base font-bold uppercase tracking-tight">Média do Dia</CardTitle>
-            <Star className="w-5 h-5 text-muted-foreground" />
+            <CardTitle className="text-sm font-bold uppercase tracking-tighter text-muted-foreground">Nota Média</CardTitle>
+            <Star className="w-5 h-5 text-secondary fill-secondary" />
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-black text-secondary">{average} / 5.0</div>
-            <div className="h-3 w-full bg-muted rounded-full mt-4 overflow-hidden">
+            <div className="text-5xl font-black tracking-tighter text-secondary">{average}</div>
+            <div className="h-2 w-full bg-muted rounded-full mt-4 overflow-hidden">
               <div 
-                className="h-full bg-secondary transition-all duration-500" 
+                className="h-full bg-secondary transition-all duration-1000 ease-out" 
                 style={{ width: `${(Number(average) / 5) * 100}%` }}
               />
             </div>
           </CardContent>
         </Card>
-        <Card className="shadow-md">
+
+        <Card className="shadow-md overflow-hidden group">
+          <div className="h-1 bg-accent/20 group-hover:bg-accent transition-colors" />
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-base font-bold uppercase tracking-tight">Tendência</CardTitle>
-            <TrendingUp className="w-5 h-5 text-muted-foreground" />
+            <CardTitle className="text-sm font-bold uppercase tracking-tighter text-muted-foreground">Status Geral</CardTitle>
+            <TrendingUp className="w-5 h-5 text-accent" />
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-black">{Number(average) >= 4 ? "Excelente" : Number(average) >= 3 ? "Boa" : "Precisa Melhorar"}</div>
-            <p className="text-sm text-muted-foreground mt-1">Classificação baseada em votos</p>
+            <div className="text-4xl font-black tracking-tighter uppercase">
+              {Number(average) >= 4 ? "Excelente" : Number(average) >= 3 ? "Satisfatório" : "Crítico"}
+            </div>
+            <p className="text-xs font-medium text-muted-foreground mt-2">Baseado no feedback em tempo real</p>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        <Card className="shadow-lg">
+        <Card className="shadow-lg border-none bg-white">
           <CardHeader>
-            <CardTitle className="text-2xl font-black uppercase">Distribuição</CardTitle>
-            <CardDescription>Quantidade de votos por nota (1-5)</CardDescription>
+            <CardTitle className="text-2xl font-black uppercase tracking-tighter">Distribuição Diária</CardTitle>
+            <CardDescription>Frequência de cada nível de satisfação</CardDescription>
           </CardHeader>
           <CardContent className="h-[400px] pt-6">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
-                <XAxis dataKey="name" fontSize={14} fontWeight="bold" />
-                <YAxis allowDecimals={false} fontSize={14} />
+                <XAxis dataKey="name" fontSize={12} fontWeight="bold" axisLine={false} tickLine={false} />
+                <YAxis allowDecimals={false} fontSize={12} axisLine={false} tickLine={false} />
                 <Tooltip 
                   cursor={{ fill: 'hsl(var(--muted))', opacity: 0.4 }}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                 />
-                <Bar dataKey="count" radius={[6, 6, 0, 0]}>
+                <Bar dataKey="count" radius={[6, 6, 0, 0]} barSize={50}>
                   {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
@@ -155,35 +166,34 @@ export const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg border-primary/20 bg-primary/[0.02]">
+        <Card className="shadow-lg border-primary/20 bg-primary/[0.01]">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <MessageSquareQuote className="w-7 h-7 text-[#379936]" />
-                <CardTitle className="text-2xl font-black uppercase">Análise de IA</CardTitle>
+                <MessageSquareQuote className="w-7 h-7 text-primary" />
+                <CardTitle className="text-2xl font-black uppercase tracking-tighter">Insight da IA</CardTitle>
               </div>
               <Button 
                 variant="outline" 
                 size="lg" 
                 onClick={handleSummarize}
                 disabled={summarizing || !evaluations || evaluations.length === 0}
-                className="font-bold uppercase tracking-tight"
+                className="font-bold uppercase tracking-tight border-primary text-primary hover:bg-primary hover:text-white transition-all"
               >
-                {summarizing && <Loader2 className="w-5 h-5 mr-2 animate-spin" />}
-                Gerar Resumo
+                {summarizing ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : "Analisar Hoje"}
               </Button>
             </div>
-            <CardDescription>Análise inteligente do feedback coletado hoje</CardDescription>
+            <CardDescription>Resumo qualitativo gerado automaticamente</CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
             {summary ? (
-              <div className="prose prose-lg dark:prose-invert max-w-none">
-                <p className="text-xl leading-relaxed font-medium text-foreground/90">{summary}</p>
+              <div className="bg-white p-6 rounded-2xl border border-primary/10 shadow-inner">
+                <p className="text-xl leading-relaxed font-medium text-foreground/90 italic">"{summary}"</p>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground border-2 border-dashed rounded-xl">
-                <MessageSquareQuote className="w-16 h-16 mb-4 opacity-20" />
-                <p className="text-xl font-medium">Clique em "Gerar Resumo" para analisar os dados.</p>
+              <div className="flex flex-col items-center justify-center py-20 text-center text-muted-foreground border-2 border-dashed rounded-2xl bg-white/50">
+                <MessageSquareQuote className="w-16 h-16 mb-4 opacity-10" />
+                <p className="text-lg font-bold uppercase tracking-widest opacity-40">Aguardando análise...</p>
               </div>
             )}
           </CardContent>

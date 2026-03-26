@@ -27,7 +27,7 @@ export const FeedbackScreen = () => {
     if (loading || submitted || !firestore || !user) return;
     setLoading(true);
     
-    // Coleção sincronizada com backend.json
+    // Referência para a coleção definida no backend.json
     const ratingsCol = collection(firestore, "dailyMealRatings");
     const newDocRef = doc(ratingsCol);
     const now = new Date();
@@ -36,11 +36,12 @@ export const FeedbackScreen = () => {
     
     const ratingData = {
       id: newDocRef.id,
-      ratingValue: ratingValue, // Campo sincronizado: ratingValue
-      ratingDate: dateStr,      // Data do dia (YYYY-MM-DD)
-      createdAt: fullTimestamp, // Horário completo da avaliação
+      ratingValue: ratingValue, // Valor da avaliação (1-5)
+      ratingDate: dateStr,      // Data formatada para agrupamento (YYYY-MM-DD)
+      createdAt: fullTimestamp, // Horário exato da avaliação
     };
 
+    // Operação não-bloqueante para agilidade no totem
     setDoc(newDocRef, ratingData)
       .then(() => {
         setSubmitted(true);
@@ -61,24 +62,24 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Overlay de Sucesso - Otimizado para Tablet */}
+      {/* Overlay de Sucesso Redimensionado para Tablet */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
-          <div className="relative mb-4 md:mb-6">
-            <div className="bg-primary/10 p-4 md:p-5 rounded-full">
-              <CheckCircle2 className="w-12 h-12 md:w-16 md:h-12 text-primary" />
+          <div className="relative mb-4">
+            <div className="bg-primary/10 p-3 rounded-full">
+              <CheckCircle2 className="w-10 h-10 text-primary" />
             </div>
-            <Heart className="absolute -top-1 -right-1 w-5 h-5 md:w-6 md:h-6 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-1 -right-1 w-4 h-4 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-primary tracking-tighter uppercase mb-2 select-none leading-none">
+          <h2 className="text-xl md:text-2xl font-black text-primary tracking-tighter uppercase mb-1 select-none leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-sm md:text-base lg:text-lg text-muted-foreground font-medium max-w-xs md:max-w-md leading-tight select-none px-4">
-            Sua opinião é fundamental para melhorarmos nosso serviço.
+          <p className="text-xs md:text-sm text-muted-foreground font-medium max-w-xs leading-tight select-none px-4">
+            Sua opinião ajuda a melhorar nossa cantina.
           </p>
 
-          <div className="mt-6 h-1.5 w-24 md:w-32 bg-muted rounded-full overflow-hidden">
+          <div className="mt-4 h-1 w-20 bg-muted rounded-full overflow-hidden">
             <div className="h-full bg-primary animate-progress" />
           </div>
         </div>
@@ -91,23 +92,22 @@ export const FeedbackScreen = () => {
         </h1>
       </header>
 
-      {/* Espaçador Superior Equilibrado */}
+      {/* Espaçadores flexíveis para centralizar a pergunta */}
       <div className="flex-1" />
 
       {/* Pergunta Centralizada */}
       <div className="shrink-0 w-full relative">
         {isUserLoading && !user && (
-          <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground text-xs uppercase font-bold tracking-widest animate-pulse">
-            <Loader2 className="w-3 h-3 animate-spin" />
-            Conectando...
+          <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-2 text-muted-foreground text-[10px] uppercase font-bold tracking-widest animate-pulse">
+            <Loader2 className="w-2.5 h-2.5 animate-spin" />
+            Sincronizando...
           </div>
         )}
-        <p className="text-2xl md:text-3xl lg:text-4xl text-muted-foreground font-medium px-4 text-center leading-tight">
+        <p className="text-2xl md:text-3xl lg:text-4xl text-muted-foreground font-medium px-4 text-center leading-tight select-none">
           O que você achou do prato de hoje?
         </p>
       </div>
 
-      {/* Espaçador Inferior Equilibrado */}
       <div className="flex-1" />
 
       {/* Grid de Carinhas na parte inferior */}
@@ -123,7 +123,7 @@ export const FeedbackScreen = () => {
               <div className="w-full aspect-square drop-shadow-2xl group-hover:drop-shadow-[0_20px_30px_rgba(55,153,54,0.3)] transition-all">
                 <EmojiFace rating={val} />
               </div>
-              <span className="font-black text-[10px] sm:text-sm md:text-base lg:text-lg text-muted-foreground group-hover:text-primary transition-colors text-center uppercase tracking-tight leading-tight">
+              <span className="font-black text-[9px] sm:text-xs md:text-sm lg:text-base text-muted-foreground group-hover:text-primary transition-colors text-center uppercase tracking-tight leading-tight select-none">
                 {val === 1 && "Muito Ruim"}
                 {val === 2 && "Ruim"}
                 {val === 3 && "Médio"}
@@ -135,11 +135,11 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Rodapé colado às carinhas */}
+      {/* Rodapé fixo logo abaixo das carinhas */}
       <footer className="shrink-0 mb-4 md:mb-6 mt-4">
-        <div className="inline-flex items-center gap-3 px-6 py-2 md:px-8 md:py-2.5 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
-          <div className="w-2.5 h-2.5 md:w-3 h-3 bg-primary rounded-full animate-pulse" />
-          <span className="text-[9px] md:text-xs lg:text-sm font-bold text-muted-foreground uppercase tracking-widest">
+        <div className="inline-flex items-center gap-3 px-6 py-2 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
+          <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+          <span className="text-[8px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest select-none">
             Totem de Avaliação • Campus Itapipoca
           </span>
         </div>
