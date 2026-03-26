@@ -57,7 +57,7 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Success Message Overlay - Tamanhos Reduzidos */}
+      {/* Success Message Overlay - Tamanhos Reduzidos para Tablet */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
           <div className="relative mb-4 md:mb-6">
@@ -80,7 +80,7 @@ export const FeedbackScreen = () => {
         </div>
       )}
 
-      {/* Cabeçalho */}
+      {/* Cabeçalho - Verde, Negrito, Sem Itálico */}
       <header className="shrink-0">
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#379936] tracking-tighter uppercase select-none leading-none">
           IFCE FoodScore
@@ -97,7 +97,7 @@ export const FeedbackScreen = () => {
         </p>
       </div>
 
-      {/* Espaçador Inferior 2 - Igual ao superior para centralizar a pergunta */}
+      {/* Espaçador Inferior 2 - Igual ao superior para centralizar a pergunta no meio */}
       <div className="flex-1" />
 
       {/* Grid de Carinhas - Posicionado na extremidade inferior */}
