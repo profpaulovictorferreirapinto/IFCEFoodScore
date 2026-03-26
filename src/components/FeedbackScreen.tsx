@@ -57,38 +57,38 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Success Message Overlay */}
+      {/* Success Message Overlay - Tamanhos Reduzidos */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
-          <div className="relative mb-6 md:mb-10">
-            <div className="bg-[#379936]/10 p-8 md:p-12 rounded-full">
-              <CheckCircle2 className="w-24 h-24 md:w-40 md:h-40 text-[#379936]" />
+          <div className="relative mb-4 md:mb-6">
+            <div className="bg-[#379936]/10 p-6 md:p-8 rounded-full">
+              <CheckCircle2 className="w-16 h-16 md:w-24 md:h-24 text-[#379936]" />
             </div>
-            <Heart className="absolute -top-2 -right-2 w-10 h-10 md:w-16 md:h-16 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-1 -right-1 w-6 h-6 md:w-10 md:h-10 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-[#379936] tracking-tighter uppercase mb-4 md:mb-6 select-none leading-none">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-[#379936] tracking-tighter uppercase mb-2 md:mb-4 select-none leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-lg md:text-2xl lg:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight select-none px-4">
+          <p className="text-base md:text-xl lg:text-2xl text-muted-foreground font-medium max-w-xl leading-tight select-none px-4">
             Sua opinião é fundamental para melhorarmos nosso serviço.
           </p>
 
-          <div className="mt-8 md:mt-12 h-2 md:h-3 w-48 md:w-[400px] bg-muted rounded-full overflow-hidden">
+          <div className="mt-6 md:mt-10 h-1.5 md:h-2 w-32 md:w-[250px] bg-muted rounded-full overflow-hidden">
             <div className="h-full bg-[#379936] animate-progress" />
           </div>
         </div>
       )}
 
       {/* Cabeçalho */}
-      <header className="shrink-0 mb-2">
+      <header className="shrink-0">
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#379936] tracking-tighter uppercase select-none leading-none">
           IFCE FoodScore
         </h1>
       </header>
 
-      {/* Espaçador Superior 1 - Ajustado para centralização equilibrada */}
-      <div className="flex-[1]" />
+      {/* Espaçador Superior 1 - Equilibrado */}
+      <div className="flex-1" />
 
       {/* Pergunta - Centralizada entre cabeçalho e carinhas */}
       <div className="shrink-0 w-full">
@@ -97,8 +97,8 @@ export const FeedbackScreen = () => {
         </p>
       </div>
 
-      {/* Espaçador Inferior 2 - Maior peso para empurrar as carinhas mais para baixo */}
-      <div className="flex-[4]" />
+      {/* Espaçador Inferior 2 - Igual ao superior para centralizar a pergunta */}
+      <div className="flex-1" />
 
       {/* Grid de Carinhas - Posicionado na extremidade inferior */}
       <div className="w-full max-w-7xl mx-auto px-4 mb-2">
