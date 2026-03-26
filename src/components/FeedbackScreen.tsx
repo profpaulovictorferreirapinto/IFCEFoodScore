@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -25,7 +26,7 @@ export const FeedbackScreen = () => {
   const [loading, setLoading] = useState(false);
   const [feedbackContent, setFeedbackContent] = useState("");
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const [period, setPeriod] = useState<string>("Manhã");
+  const [period, setPeriod] = useState<string>("Lanche Manhã");
   
   const firestore = useFirestore();
   const auth = useAuth();
@@ -121,6 +122,8 @@ export const FeedbackScreen = () => {
       });
   };
 
+  const periods = ["Lanche Manhã", "Almoço", "Lanche Tarde", "Lanche Noite"];
+
   return (
     <div className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
       {/* Overlay de Sucesso */}
@@ -159,12 +162,12 @@ export const FeedbackScreen = () => {
           <Clock className="w-4 h-4" />
           <span className="text-xs font-bold uppercase tracking-wider">Selecione o período em que foi servida a refeição:</span>
         </div>
-        <div className="flex p-1 bg-muted/30 rounded-2xl border border-border/40">
-          {["Manhã", "Tarde", "Noite"].map((p) => (
+        <div className="flex flex-wrap justify-center p-1 bg-muted/30 rounded-2xl border border-border/40 gap-1">
+          {periods.map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-tight transition-all ${
+              className={`px-4 md:px-6 py-2.5 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-tight transition-all ${
                 period === p 
                 ? "bg-white text-primary shadow-md scale-105" 
                 : "text-muted-foreground hover:bg-white/50"

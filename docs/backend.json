@@ -22,8 +22,8 @@
         },
         "period": {
           "type": "string",
-          "description": "The meal period (Manhã, Tarde, Noite).",
-          "enum": ["Manhã", "Tarde", "Noite"]
+          "description": "The meal period (Lanche Manhã, Almoço, Lanche Tarde, Lanche Noite).",
+          "enum": ["Lanche Manhã", "Almoço", "Lanche Tarde", "Lanche Noite"]
         },
         "createdAt": {
           "type": "string",
