@@ -1,89 +1,50 @@
 {
   "entities": {
     "Rating": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Rating",
+      "description": "Individual student feedback on daily meals.",
       "type": "object",
-      "description": "Represents an individual student's feedback on the daily meal at IFCE Campus Itapipoca.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Rating entity."
-        },
-        "score": {
-          "type": "number",
-          "description": "The numerical score given by the student (1 = very bad, 5 = excellent) corresponding to the 'carinhas' selection."
-        },
-        "ratingDate": {
-          "type": "string",
-          "description": "The calendar date on which the meal was rated, representing the 'meal of the day'.",
-          "format": "date"
-        }
+        "id": { "type": "string" },
+        "score": { "type": "number" },
+        "ratingDate": { "type": "string", "format": "date" }
       },
-      "required": [
-        "id",
-        "score",
-        "ratingDate"
-      ]
+      "required": ["id", "score", "ratingDate"]
+    },
+    "DailySummary": {
+      "title": "DailySummary",
+      "description": "Pre-computed daily statistics.",
+      "type": "object",
+      "properties": {
+        "averageScore": { "type": "number" },
+        "totalRatings": { "type": "number" },
+        "date": { "type": "string", "format": "date" }
+      }
+    },
+    "AdminRole": {
+      "title": "AdminRole",
+      "description": "Database-backed access control for administrators.",
+      "type": "object",
+      "properties": {
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
+    "providers": ["password", "anonymous"]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/ratings/{ratingId}",
-        "definition": {
-          "entityName": "rating",
-          "schema": {
-            "$ref": "#/backend/entities/Rating"
-          },
-          "description": "Stores individual anonymous student ratings for daily meals. Raw ratings are not directly readable by client applications; intended for backend aggregation and analysis. Includes denormalized 'ratingDate' for efficient querying.",
-          "params": [
-            {
-              "name": "ratingId",
-              "description": "The unique identifier for an individual rating document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/daily_summaries/{date}",
-        "definition": {
-          "entityName": "dailySummary",
-          "schema": {
-            "$ref": "#/backend/entities/DailySummary"
-          },
-          "description": "Stores daily aggregated statistics (average score, total ratings, score distribution) for meals, pre-computed from raw ratings by a backend service. This collection is readable only by authenticated administrators for the dashboard. Includes 'date' for efficient querying and path matching. While a schema isn't provided in the prompt, it would typically include fields like `averageScore`, `totalRatings`, and `scoreCounts: { '1': N, ..., '5': N }`.",
-          "params": [
-            {
-              "name": "date",
-              "description": "The calendar date for which the summary is aggregated, formatted as 'YYYY-MM-DD'."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/roles_admin/{userId}",
-        "definition": {
-          "entityName": "adminRole",
-          "schema": {
-            "$ref": "#/backend/entities/AdminRole"
-          },
-          "description": "Identifies users with administrative privileges. The existence of a document at this path for a specific userId grants admin access, facilitating Database-Backed Access Control (DBAC). This entity typically holds minimal data, often just a timestamp of creation, as its purpose is primarily for existence checks.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique Firebase Authentication User ID (UID) of an administrator."
-            }
-          ]
-        }
-      }
-    ],
-    "reasoning": "The recommended Firestore structure is designed to be secure, scalable, and debuggable by strictly adhering to the core design principles. It leverages structural segregation and denormalization to ensure Authorization Independence and support Query-Accessible Paths (QAPs).\n\n1.  **Authorization Independence (CRITICAL):**\n    *   **Ratings:** Each `/ratings/{ratingId}` document is entirely self-contained. The `ratingDate` is explicitly stored within the document itself, eliminating any need for Firestore security rules to perform `get()` operations on parent documents or other collections to determine access rights or context for a specific rating. This allows atomic creation and guarantees that security rules for ratings are simple and robust.\n    *   **Daily Summaries:** The `/daily_summaries/{date}` documents are also self-contained. Their authorization is based on a direct check against the top-level `/roles_admin/{userId}` collection, which is a separate authorization context, not a hierarchical dependency. This prevents complex multi-document lookups in security rules.\n\n2.  **Clarity of Intent & Structural Segregation:**\n    *   **`/ratings/{ratingId}`:** This collection is dedicated to raw, individual student feedback. Its security posture is homogenous: anyone (anonymous user via the totem) can create a rating, but no client-side application (including the totem itself or any general user) can read or list these documents. This prevents data leakage and ensures raw data is only accessible by trusted backend services for aggregation.\n    *   **`/daily_summaries/{date}`:** This collection is dedicated to pre-aggregated daily data. Its security posture is homogenous: only authenticated administrators can read/list these documents for dashboard purposes. Backend services are responsible for creating and updating these summaries. This segregation ensures that sensitive raw data is not mixed with aggregate data, and different access patterns are handled by distinct collections.\n    *   **`/roles_admin/{userId}`:** This collection serves purely as a Database-Backed Access Control (DBAC) mechanism. Its homogenous security posture allows for simple existence checks (`get().exists()`) in security rules to grant administrative privileges.\n\n3.  **QAPs (Rules are not Filters):**\n    *   **Raw Ratings (`/ratings/{ratingId}`):** Client-side `list` operations are explicitly denied by security rules (`allow read: if false;`). This mandates that any analysis or reporting needing access to raw ratings must occur via a trusted backend service (e.g., Cloud Functions). This prevents clients from downloading potentially large datasets and attempting to filter them locally, ensuring security and efficiency.\n    *   **Daily Summaries (`/daily_summaries/{date}`):** Security rules will allow `list` operations only for authenticated administrators (`allow read: if exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));`). This enables the admin dashboard to perform efficient queries (e.g., `where('date', '>=', 'some_date')`) to retrieve aggregated data without filtering on the client, fully supporting QAPs for administrators."
+    "/ratings/{ratingId}": {
+      "schema": { "$ref": "#/backend/entities/Rating" },
+      "description": "Stores individual anonymous ratings."
+    },
+    "/daily_summaries/{date}": {
+      "schema": { "$ref": "#/backend/entities/DailySummary" },
+      "description": "Aggregated daily data for the admin dashboard."
+    },
+    "/roles_admin/{userId}": {
+      "schema": { "$ref": "#/backend/entities/AdminRole" },
+      "description": "Identifies admin users."
+    }
   }
 }
