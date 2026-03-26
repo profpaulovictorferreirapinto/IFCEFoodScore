@@ -108,24 +108,24 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Overlay de Sucesso - Full Screen Takeover */}
+      {/* Overlay de Sucesso - Full Screen Takeover Gigante */}
       {submitted && (
-        <div className="fixed inset-0 z-[100] bg-background w-full h-full flex flex-col items-center justify-center animate-in fade-in duration-300 px-6 text-center">
-          <div className="relative mb-3">
-            <div className="bg-primary/10 p-2.5 rounded-full">
-              <CheckCircle2 className="w-7 h-7 text-primary" />
+        <div className="fixed inset-0 z-[100] bg-background w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-10 text-center">
+          <div className="relative mb-10 md:mb-16">
+            <div className="bg-primary/10 p-10 md:p-14 rounded-full shadow-[0_0_50px_rgba(55,153,54,0.2)]">
+              <CheckCircle2 className="w-24 h-24 md:w-40 md:h-40 text-primary" />
             </div>
-            <Heart className="absolute -top-1 -right-1 w-3 h-3 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-4 -right-4 w-12 h-12 md:w-20 md:h-20 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-lg md:text-xl font-black text-primary tracking-tighter uppercase mb-1 select-none leading-none">
+          <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-primary tracking-tighter uppercase mb-6 select-none leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-[10px] md:text-[11px] text-muted-foreground font-medium max-w-[200px] leading-tight select-none px-4">
+          <p className="text-xl md:text-3xl lg:text-4xl text-muted-foreground font-semibold max-w-[600px] md:max-w-[900px] leading-tight select-none px-4">
             Sua opinião ajuda a melhorar nossa cantina.
           </p>
 
-          <div className="mt-4 h-1 w-16 bg-muted rounded-full overflow-hidden">
+          <div className="mt-16 md:mt-24 h-3 w-64 md:w-96 bg-muted rounded-full overflow-hidden shadow-inner">
             <div className="h-full bg-primary animate-progress" />
           </div>
         </div>
@@ -138,7 +138,7 @@ export const FeedbackScreen = () => {
         </h1>
       </header>
 
-      {/* Espaçador Superior para centralizar a pergunta */}
+      {/* Espaçador Superior */}
       <div className="flex-1" />
 
       {/* Pergunta Centralizada */}
@@ -156,10 +156,10 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Espaçador Inferior para empurrar as carinhas para baixo */}
+      {/* Espaçador Inferior */}
       <div className="flex-1" />
 
-      {/* Grid de Carinhas - Posicionado no Terço Inferior */}
+      {/* Grid de Carinhas */}
       <div className="w-full max-w-6xl mx-auto px-4 mb-4">
         <div className="grid grid-cols-5 gap-4 md:gap-6 lg:gap-8 w-full">
           {[1, 2, 3, 4, 5].map((val) => (
@@ -184,7 +184,7 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Rodapé e Botão de Feedback */}
+      {/* Rodapé */}
       <footer className="shrink-0 flex flex-col items-center gap-3 mt-4">
         <Dialog open={isFeedbackModalOpen} onOpenChange={setIsFeedbackModalOpen}>
           <DialogTrigger asChild>
