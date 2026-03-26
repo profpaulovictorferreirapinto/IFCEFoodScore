@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -39,7 +40,7 @@ export const AdminDashboard = () => {
     { name: '1', count: ratingsCount[0], color: 'hsl(var(--chart-1))' },
     { name: '2', count: ratingsCount[1], color: 'hsl(var(--chart-2))' },
     { name: '3', count: ratingsCount[2], color: 'hsl(var(--chart-3))' },
-    { name: '4', count: ratingsCount[3], color: 'hsl(var(--chart-4))' },
+    { name: '4', count: ratingsCount[4], color: 'hsl(var(--chart-4))' },
     { name: '5', count: ratingsCount[4], color: 'hsl(var(--chart-5))' },
   ];
 

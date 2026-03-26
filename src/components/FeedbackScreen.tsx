@@ -17,7 +17,7 @@ export const FeedbackScreen = () => {
     try {
       await addEvaluation(rating);
       setSubmitted(true);
-      // Automatically reset after 3 seconds for the next person
+      // Reseta após 3 segundos para a próxima pessoa
       setTimeout(() => setSubmitted(false), 3000);
     } catch (error) {
       console.error("Failed to submit rating", error);
@@ -27,7 +27,7 @@ export const FeedbackScreen = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between h-screen p-4 md:p-8 max-w-5xl mx-auto w-full overflow-hidden">
+    <div className="flex flex-col items-center justify-between h-screen p-4 md:p-8 max-w-5xl mx-auto w-full overflow-hidden bg-background">
       <header className="text-center mt-4 md:mt-8 space-y-4 flex flex-col items-center w-full">
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#379936] tracking-tighter uppercase select-none">
           IFCE FoodScore
@@ -40,26 +40,26 @@ export const FeedbackScreen = () => {
       </header>
 
       <div className="relative w-full flex-1 flex items-center justify-center py-4">
-        {/* Success Overlay */}
+        {/* Success Overlay - Agora com Z-index superior e fundo sólido para garantir visibilidade */}
         <div className={cn(
-          "absolute inset-0 z-20 flex flex-col items-center justify-center bg-background transition-all duration-500 rounded-3xl",
+          "absolute inset-0 z-50 flex flex-col items-center justify-center bg-background transition-all duration-500 rounded-3xl px-4",
           submitted ? "opacity-100 translate-y-0 scale-100 pointer-events-auto" : "opacity-0 translate-y-10 scale-95 pointer-events-none"
         )}>
           <div className="relative">
             <div className="bg-[#379936]/10 p-10 rounded-full mb-8 relative z-10">
-              <CheckCircle2 className="w-32 h-32 text-[#379936] animate-in zoom-in duration-300" />
+              <CheckCircle2 className="w-32 h-32 md:w-48 md:h-48 text-[#379936] animate-in zoom-in duration-300" />
             </div>
-            <Heart className="absolute -top-4 -right-4 w-12 h-12 text-destructive animate-bounce fill-destructive" />
+            <Heart className="absolute -top-4 -right-4 w-12 h-12 md:w-16 md:h-16 text-destructive animate-bounce fill-destructive" />
           </div>
-          <h2 className="text-4xl md:text-6xl font-black text-[#379936] text-center tracking-tight uppercase">
+          <h2 className="text-4xl md:text-7xl font-black text-[#379936] text-center tracking-tight uppercase">
             Muito obrigado!
           </h2>
-          <p className="text-xl md:text-3xl text-muted-foreground mt-6 font-medium text-center px-6">
+          <p className="text-xl md:text-4xl text-muted-foreground mt-6 font-medium text-center max-w-2xl">
             Sua opinião é fundamental para melhorarmos nosso serviço.
           </p>
           
-          {/* Progress bar for auto-reset feedback */}
-          <div className="mt-12 h-2 w-64 bg-muted rounded-full overflow-hidden">
+          {/* Barra de progresso para indicar o auto-reset */}
+          <div className="mt-16 h-3 w-64 md:w-96 bg-muted rounded-full overflow-hidden">
             {submitted && (
               <div className="h-full bg-[#379936] animate-[progress_3s_linear]" />
             )}
@@ -74,7 +74,7 @@ export const FeedbackScreen = () => {
           {[1, 2, 3, 4, 5].map((val) => (
             <button
               key={val}
-              disabled={loading}
+              disabled={loading || submitted}
               onClick={() => handleRating(val)}
               className="flex flex-col items-center gap-4 transition-transform hover:scale-110 active:scale-90 group focus:outline-none"
             >
