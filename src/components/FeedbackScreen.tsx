@@ -17,7 +17,6 @@ export const FeedbackScreen = () => {
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
 
-  // Garante que o totem esteja autenticado anonimamente para gravar os dados
   useEffect(() => {
     if (auth && !user && !isUserLoading) {
       initiateAnonymousSignIn(auth);
@@ -38,11 +37,9 @@ export const FeedbackScreen = () => {
       ratingDate: dateStr,
     };
 
-    // Gravação não bloqueante conforme padrões de performance
     setDoc(newDocRef, ratingData)
       .then(() => {
         setSubmitted(true);
-        // Reseta após 3 segundos para a próxima pessoa
         setTimeout(() => setSubmitted(false), 3000);
       })
       .catch(async (err) => {
@@ -83,18 +80,22 @@ export const FeedbackScreen = () => {
         </div>
       )}
 
-      {/* Título - Fixado no topo com margem flexível */}
-      <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#379936] tracking-tighter uppercase select-none leading-none mb-auto">
-        IFCE FoodScore
-      </h1>
+      {/* Título - Fixado no topo */}
+      <header className="shrink-0 mb-4">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#379936] tracking-tighter uppercase select-none leading-none">
+          IFCE FoodScore
+        </h1>
+      </header>
 
-      {/* Pergunta - Centralizada entre o título e as carinhas */}
-      <p className="text-2xl md:text-4xl lg:text-5xl text-muted-foreground font-medium px-4 text-center mb-auto">
-        O que você achou do prato de hoje?
-      </p>
+      {/* Pergunta - Ocupa o espaço central entre o título e as carinhas */}
+      <div className="flex-1 flex items-center justify-center w-full">
+        <p className="text-2xl md:text-4xl lg:text-5xl text-muted-foreground font-medium px-4 text-center">
+          O que você achou do prato de hoje?
+        </p>
+      </div>
 
-      {/* Main Buttons Grid - Empurrada para baixo via mt-auto, mantendo espaço para o rodapé */}
-      <div className="w-full max-w-7xl mx-auto px-4 mb-8 md:mb-12 mt-auto">
+      {/* Main Buttons Grid - Posicionado bem mais abaixo */}
+      <div className="w-full max-w-7xl mx-auto px-4 mb-6 md:mb-8 mt-auto">
         <div className="grid grid-cols-5 gap-4 md:gap-10 lg:gap-14 w-full">
           {[1, 2, 3, 4, 5].map((val) => (
             <button
@@ -118,8 +119,8 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Footer - Posicionado logo abaixo das carinhas, mantendo um espaçamento de respiro no tablet */}
-      <footer className="shrink-0 mb-8 md:mb-12">
+      {/* Footer - Posicionado logo abaixo das carinhas, com margem mínima no fundo */}
+      <footer className="shrink-0 mb-4 md:mb-6">
         <div className="inline-flex items-center gap-3 px-8 py-4 md:px-12 md:py-6 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
           <div className="w-3 h-3 md:w-5 md:h-5 bg-[#379936] rounded-full animate-pulse" />
           <span className="text-xs md:text-lg font-bold text-muted-foreground uppercase tracking-widest">
