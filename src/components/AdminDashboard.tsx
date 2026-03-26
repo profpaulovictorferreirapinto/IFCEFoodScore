@@ -72,7 +72,7 @@ export const AdminDashboard = () => {
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-b pb-8">
         <div className="flex items-center gap-6">
-          <h1 className="text-3xl font-black text-[#379936] tracking-tighter uppercase italic">
+          <h1 className="text-3xl font-black text-[#379936] tracking-tighter uppercase">
             IFCE FoodScore
           </h1>
           <div className="h-10 w-px bg-border hidden md:block" />

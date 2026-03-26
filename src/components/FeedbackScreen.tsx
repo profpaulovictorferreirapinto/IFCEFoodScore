@@ -28,7 +28,7 @@ export const FeedbackScreen = () => {
   return (
     <div className="flex flex-col items-center justify-between min-h-screen p-4 md:p-8 max-w-5xl mx-auto w-full">
       <header className="text-center mt-8 md:mt-16 space-y-6 flex flex-col items-center w-full">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#379936] tracking-tighter uppercase italic select-none">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#379936] tracking-tighter uppercase select-none">
           IFCE FoodScore
         </h1>
         <div className="space-y-2">
