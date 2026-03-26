@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -69,8 +68,8 @@ export const FeedbackScreen = () => {
     setDoc(newDocRef, ratingData)
       .then(() => {
         setSubmitted(true);
-        // Tempo aumentado para 5 segundos
-        setTimeout(() => setSubmitted(false), 5000);
+        // Tempo ajustado para 4 segundos
+        setTimeout(() => setSubmitted(false), 4000);
       })
       .catch(async (err) => {
         const permissionError = new FirestorePermissionError({
@@ -106,8 +105,8 @@ export const FeedbackScreen = () => {
         setFeedbackContent("");
         setIsFeedbackModalOpen(false);
         setSubmitted(true);
-        // Tempo aumentado para 5 segundos
-        setTimeout(() => setSubmitted(false), 5000);
+        // Tempo ajustado para 4 segundos
+        setTimeout(() => setSubmitted(false), 4000);
       })
       .catch(async (err) => {
         const permissionError = new FirestorePermissionError({
@@ -228,9 +227,11 @@ export const FeedbackScreen = () => {
           <DialogContent className="sm:max-w-[450px]">
             <DialogHeader>
               <DialogTitle className="text-xl font-black uppercase text-primary">Sua opinião</DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground">
-                Escreva abaixo sua mensagem de forma anônima sobre a refeição do período: <span className="font-bold text-primary">{period}</span>.
-              </DialogDescription>
+              <DialogHeader>
+                <DialogDescription className="text-xs text-muted-foreground">
+                  Escreva abaixo sua mensagem de forma anônima sobre a refeição do período: <span className="font-bold text-primary">{period}</span>.
+                </DialogDescription>
+              </DialogHeader>
             </DialogHeader>
             <div className="py-2">
               <Textarea 
