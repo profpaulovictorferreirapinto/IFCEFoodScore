@@ -1,43 +1,66 @@
+
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EmojiFace } from './EmojiFace';
-import { useFirestore } from '@/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { cn } from '@/lib/utils';
+import { useFirestore, useAuth, useUser } from '@/firebase';
+import { collection, doc, setDoc } from 'firebase/firestore';
+import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 import { CheckCircle2, Heart } from 'lucide-react';
 
 export const FeedbackScreen = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const firestore = useFirestore();
+  const auth = useAuth();
+  const { user, isUserLoading } = useUser();
 
-  const handleRating = async (rating: number) => {
+  // Garante que o totem esteja autenticado anonimamente para gravar os dados
+  useEffect(() => {
+    if (auth && !user && !isUserLoading) {
+      initiateAnonymousSignIn(auth);
+    }
+  }, [auth, user, isUserLoading]);
+
+  const handleRating = (ratingValue: number) => {
     if (loading || submitted || !firestore) return;
     setLoading(true);
-    try {
-      const now = new Date();
-      const dateStr = now.toISOString().split('T')[0];
-      
-      await addDoc(collection(firestore, "evaluations"), {
-        rating,
-        timestamp: serverTimestamp(),
-        date: dateStr,
+    
+    const ratingsCol = collection(firestore, "ratings");
+    const newDocRef = doc(ratingsCol);
+    const dateStr = new Date().toISOString().split('T')[0];
+    
+    const ratingData = {
+      id: newDocRef.id,
+      score: ratingValue,
+      ratingDate: dateStr,
+    };
+
+    // Gravação não bloqueante conforme padrões de performance
+    setDoc(newDocRef, ratingData)
+      .then(() => {
+        setSubmitted(true);
+        // Reseta após 3 segundos para a próxima pessoa
+        setTimeout(() => setSubmitted(false), 3000);
+      })
+      .catch(async (err) => {
+        const permissionError = new FirestorePermissionError({
+          path: newDocRef.path,
+          operation: 'create',
+          requestResourceData: ratingData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-      
-      setSubmitted(true);
-      // Reseta após 3 segundos para a próxima pessoa
-      setTimeout(() => setSubmitted(false), 3000);
-    } catch (error) {
-      console.error("Failed to submit rating", error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
     <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center justify-between p-4 md:p-8">
-      {/* Success Message Overlay - Tela cheia e prioritária */}
+      {/* Success Message Overlay */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6">
           <div className="relative mb-8">
