@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * CORE PHILOSOPHY
+     * This ruleset implements a "Blind Drop" pattern for student feedback combined with a 
+     * Database-Backed Access Control (DBAC) model for administrators. 
+     * 
+     * DATA STRUCTURE
+     * - /ratings/{ratingId}: A write-only collection for students to submit feedback.
+     * - /daily_summaries/{date}: Aggregated data accessible only to administrators.
+     * - /roles_admin/{userId}: A lookup collection to verify administrative privileges.
+     * 
+     * KEY SECURITY DECISIONS
+     * 1. Blind Drop Ratings: Students (authenticated via anonymous or password providers) 
+     *    can create ratings but cannot read, list, update, or delete any rating documents. 
+     *    This prevents students from seeing others' feedback or tampering with data.
+     * 2. Admin-Only Aggregates: The daily summaries are restricted to users present in the 
+     *    'roles_admin' collection.
+     * 3. Backend-Controlled Summaries: Client applications are forbidden from writing to 
+     *    the 'daily_summaries' collection; this is reserved for trusted backend processes.
+     * 4. Relational Integrity: On creation of a rating, the rules enforce that the 
+     *    internal 'id' field matches the document path ID.
+     */
+
+    // --- Helper Functions ---
+
+    /** @description Checks if the request is from an authenticated user (including anonymous). */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** @description Checks if the authenticated user has an entry in the roles_admin collection. */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Rules for the ratings collection, allowing students to submit feedback.
+     * @path /ratings/{ratingId}
+     * @allow (create) if a user is signed in (anonymous or password).
+     * @deny (get, list, update, delete) for all client-side requests to ensure data privacy.
+     * @principle Implements a "Blind Drop" pattern and enforces path-to-data consistency.
+     */
+    match /ratings/{ratingId} {
+      allow get, list: if false;
+      allow create: if isSignedIn() && request.resource.data.id == ratingId;
+      allow update, delete: if false;
+    }
+
+    /**
+     * @description Rules for aggregated daily summaries, restricted to administrative staff.
+     * @path /daily_summaries/{date}
+     * @allow (get, list) if the user is an administrator.
+     * @deny (create, update, delete) for all client apps; these are managed by backend services.
+     * @principle Restricts access to sensitive aggregated data using DBAC.
+     */
+    match /daily_summaries/{date} {
+      allow get, list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Rules for the admin roles registry used for authorization lookups.
+     * @path /roles_admin/{userId}
+     * @allow (get) if the user is checking their own status or is an admin.
+     * @allow (list) if the user is an admin.
+     * @deny (create, update, delete) for client apps to prevent privilege escalation.
+     * @principle Provides the source of truth for administrative authorization.
+     */
+    match /roles_admin/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+  }
+}
