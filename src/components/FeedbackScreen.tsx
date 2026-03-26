@@ -21,19 +21,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-const getInitialPeriod = () => {
-  const hour = new Date().getHours();
-  if (hour >= 5 && hour < 12) return "Manhã";
-  if (hour >= 12 && hour < 18) return "Tarde";
-  return "Noite";
-};
-
 export const FeedbackScreen = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedbackContent, setFeedbackContent] = useState("");
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const [period, setPeriod] = useState<string>(getInitialPeriod());
+  const [period, setPeriod] = useState<string>("Manhã");
   
   const firestore = useFirestore();
   const auth = useAuth();
