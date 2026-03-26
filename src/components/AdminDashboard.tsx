@@ -17,7 +17,7 @@ export const AdminDashboard = () => {
   const evaluationsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(
-      collection(firestore, "ratings"),
+      collection(firestore, "dailyMealRatings"),
       where("ratingDate", "==", today)
     );
   }, [firestore, today]);
@@ -29,7 +29,7 @@ export const AdminDashboard = () => {
   const ratingsCount = useMemo(() => {
     const counts = [0, 0, 0, 0, 0];
     evaluations?.forEach(e => {
-      const score = e.score;
+      const score = e.ratingValue;
       if (score >= 1 && score <= 5) {
         counts[score - 1]++;
       }
@@ -47,7 +47,7 @@ export const AdminDashboard = () => {
 
   const average = useMemo(() => {
     if (!evaluations || evaluations.length === 0) return "0";
-    const sum = evaluations.reduce((acc, curr) => acc + curr.score, 0);
+    const sum = evaluations.reduce((acc, curr) => acc + curr.ratingValue, 0);
     return (sum / evaluations.length).toFixed(1);
   }, [evaluations]);
 
@@ -56,7 +56,7 @@ export const AdminDashboard = () => {
     setSummarizing(true);
     try {
       const result = await summarizeDailyFeedback({ 
-        evaluations: evaluations.map(d => d.score) 
+        evaluations: evaluations.map(d => d.ratingValue) 
       });
       setSummary(result.summary);
     } catch (err) {
