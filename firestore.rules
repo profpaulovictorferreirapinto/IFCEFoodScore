@@ -1,36 +1,94 @@
+/**
+ * Firestore Security Rules
+ *
+ * Core Philosophy:
+ * This ruleset implements a centralized administrative control model combined with an 
+ * anonymous feedback system. It prioritizes the "Database Access Control" (DBAC) 
+ * principle by using a dedicated collection to define administrative privileges.
+ *
+ * Data Structure:
+ * - /roles_admin/{adminUid}: A collection of UIDs representing users with full 
+ *   administrative access to the feedback data.
+ * - /dailyMealRatings/{ratingId}: A top-level collection containing anonymous 
+ *   feedback from students.
+ *
+ * Key Security Decisions:
+ * - Anonymous Submission: Any authenticated user (including Firebase Anonymous Auth) 
+ *   can create a rating, enabling kiosk-style feedback.
+ * - Admin-Only Visibility: Feedback data is considered internal and is only visible 
+ *   to users explicitly listed in the 'roles_admin' collection.
+ * - Restricted Management: Only existing administrators can modify the admin roles 
+ *   collection or update/delete existing meal ratings.
+ * - Path-to-Data Consistency: During creation, rules enforce that the internal 
+ *   'id' field matches the Firestore document ID to ensure relational integrity.
+ */
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     // --- Helper Functions ---
 
+    /** 
+     * @description Checks if the user is authenticated via any provider (including anonymous).
+     */
     function isSignedIn() {
       return request.auth != null;
     }
 
+    /** 
+     * @description Checks if the authenticated user's UID exists in the admin roles collection.
+     */
     function isAdmin() {
       return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
     }
 
+    /** 
+     * @description Combines existence check with admin authorization for destructive/update actions.
+     */
+    function isExistingAdmin() {
+      return resource != null && isAdmin();
+    }
+
     // --- Collection Rules ---
 
-    match /ratings/{ratingId} {
-      // Permite que qualquer totem autenticado anonimamente envie um voto
-      allow create: if isSignedIn() && request.resource.data.id == ratingId;
-      // Apenas administradores podem ver os votos individuais
-      allow get, list: if isAdmin();
-      allow update, delete: if false;
-    }
-
-    match /daily_summaries/{date} {
-      allow get, list: if isAdmin();
-      allow create, update, delete: if false;
-    }
-
-    match /roles_admin/{userId} {
-      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+    /**
+     * @description Rules for managing administrative privileges.
+     * @path /roles_admin/{adminUid}
+     * @allow get: If user is the specific admin or is an existing admin.
+     * @allow list, create, update, delete: Only if requester is an existing admin.
+     * @deny Any write operation by a non-admin user.
+     * @principle DBAC (Database Access Control) - explicitly mapping UIDs to roles.
+     */
+    match /roles_admin/{adminUid} {
+      allow get: if isSignedIn() && (request.auth.uid == adminUid || isAdmin());
       allow list: if isAdmin();
-      allow create, update, delete: if false;
+      allow create: if isAdmin();
+      allow update: if isExistingAdmin();
+      allow delete: if isExistingAdmin();
     }
+
+    /**
+     * @description Rules for anonymous meal and snack ratings.
+     * @path /dailyMealRatings/{ratingId}
+     * @allow create: Any authenticated user (totem mode).
+     * @allow get, list, update, delete: Only administrators.
+     * @deny Read access to students or unauthenticated users to protect aggregate data privacy.
+     * @principle Prototyping Flexibility - Enforces ID consistency on create but allows flexible schema.
+     */
+    match /dailyMealRatings/{ratingId} {
+      // Read access is restricted to administrative staff
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      
+      // Creation is open to all authenticated users (students)
+      // Enforces relational integrity: data.id must match document path ID
+      allow create: if isSignedIn() && request.resource.data.id == ratingId;
+      
+      // Management of existing records is restricted to administrators
+      allow update: if isExistingAdmin();
+      allow delete: if isExistingAdmin();
+    }
+
   }
 }

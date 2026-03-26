@@ -1,52 +1,79 @@
-
 {
   "entities": {
-    "Rating": {
-      "title": "Rating",
-      "description": "Individual student feedback on daily meals.",
+    "DailyMealRating": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DailyMealRating",
       "type": "object",
+      "description": "Represents a single rating given by a student for the meal or snack of a specific day at IFCE Campus Itapipoca. This entity captures the anonymous feedback for the daily food offering.",
       "properties": {
-        "id": { "type": "string" },
-        "score": { "type": "number" },
-        "ratingDate": { "type": "string", "format": "date" },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the DailyMealRating entity."
+        },
+        "ratingDate": {
+          "type": "string",
+          "description": "The specific date for which the meal or snack was rated. This field is crucial for aggregating daily feedback and ensures ratings are attributed to the correct day's offering.",
+          "format": "date"
+        },
+        "ratingValue": {
+          "type": "number",
+          "description": "The numerical rating provided by the student, ranging from 1 (very bad) to 5 (excellent). This value directly corresponds to the selection of the 'carinha' (emoji) on the evaluation interface."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating the exact date and time when this specific rating was recorded in the system.",
+          "format": "date-time"
+        }
       },
-      "required": ["id", "score", "ratingDate", "createdAt"]
-    },
-    "DailySummary": {
-      "title": "DailySummary",
-      "description": "Pre-computed daily statistics.",
-      "type": "object",
-      "properties": {
-        "averageScore": { "type": "number" },
-        "totalRatings": { "type": "number" },
-        "date": { "type": "string", "format": "date" }
-      }
-    },
-    "AdminRole": {
-      "title": "AdminRole",
-      "description": "Database-backed access control for administrators.",
-      "type": "object",
-      "properties": {
-        "createdAt": { "type": "string", "format": "date-time" }
-      }
+      "required": [
+        "id",
+        "ratingDate",
+        "ratingValue",
+        "createdAt"
+      ]
     }
   },
   "auth": {
-    "providers": ["password", "anonymous"]
+    "providers": [
+      "password",
+      "anonymous"
+    ]
   },
   "firestore": {
-    "/ratings/{ratingId}": {
-      "schema": { "$ref": "#/backend/entities/Rating" },
-      "description": "Stores individual anonymous ratings."
-    },
-    "/daily_summaries/{date}": {
-      "schema": { "$ref": "#/backend/entities/DailySummary" },
-      "description": "Aggregated daily data for the admin dashboard."
-    },
-    "/roles_admin/{userId}": {
-      "schema": { "$ref": "#/backend/entities/AdminRole" },
-      "description": "Identifies admin users."
-    }
+    "structure": [
+      {
+        "path": "/dailyMealRatings/{ratingId}",
+        "definition": {
+          "entityName": "DailyMealRating",
+          "schema": {
+            "$ref": "#/backend/entities/DailyMealRating"
+          },
+          "description": "Collection for storing anonymous daily meal and snack ratings from students. Each document represents a single rating instance. Includes denormalized 'ratingDate' for efficient querying and aggregation, and 'createdAt' for timestamping.",
+          "params": [
+            {
+              "name": "ratingId",
+              "description": "The unique identifier for a specific DailyMealRating document."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{adminUid}",
+        "definition": {
+          "entityName": "admin",
+          "schema": {
+            "$ref": "#/backend/entities/user"
+          },
+          "description": "Dedicated collection for storing the UIDs of users who have administrative privileges. The existence of a document with a user's UID in this collection grants admin access. This follows the DBAC (Database Access Control) principle for explicit role management.",
+          "params": [
+            {
+              "name": "adminUid",
+              "description": "The unique user ID (UID) of an administrator."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The proposed Firestore structure prioritizes security, scalability, and debuggability in line with the core design principles. It leverages two main collections: \n\n1.  \"/dailyMealRatings\": This collection stores individual, anonymous meal ratings. Each document represents a single instance of a student's feedback for a specific date. The decision to make this a top-level collection reflects the 'anonymous' nature of the feedback; ratings are not directly owned by or tied to a specific identified user's data (except for the ephemeral anonymous UID of the device, which is not meant for student identification). This approach simplifies security rules, as access doesn't depend on complex user relationships.\n    \n    *   **Authorization Independence:** Each `DailyMealRating` document is self-contained. Its creation requires only that the user is authenticated (even anonymously), and reading requires an administrative role. There are no hierarchical dependencies on parent documents for authorization, completely eliminating the need for `get()` calls in security rules for this collection. This allows for atomic write operations without complex rule evaluation.\n    *   **QAPs (Rules are not Filters):** For `create` operations, any authenticated user (including anonymous) can submit a rating. This enables the 'totem' functionality where any student can provide feedback. For `list` operations, administrators need to retrieve ratings. The `ratingDate` field within each `DailyMealRating` document allows for efficient and secure querying by date or date range. Security rules can permit `list` operations only for authenticated administrators, ensuring that no unauthorized filtering of sensitive data occurs client-side.\n\n2.  \"/roles_admin\": This collection is dedicated to managing administrative roles using the DBAC principle. It contains documents where the document ID is the `uid` of an administrator. The presence of a `uid` in this collection signifies administrative privileges.\n    \n    *   **Authorization Independence:** Admin access is determined solely by checking for the existence of `request.auth.uid` within this collection. This is an atomic and independent check, avoiding any hierarchical lookups. This allows for clear and explicit role-based access control.\n    *   **QAPs (Rules are not Filters):** This collection is designed for simple existence checks, which are highly performant and secure, satisfying the QAP principle by explicitly defining who has elevated privileges."
   }
 }
