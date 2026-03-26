@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { EmojiFace } from './EmojiFace';
 import { addEvaluation } from '@/lib/firebase';
-import { Card } from './ui/card';
 import { cn } from '@/lib/utils';
 import { CheckCircle2 } from 'lucide-react';
 import { IFCELogo } from './IFCELogo';
@@ -28,15 +27,17 @@ export const FeedbackScreen = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 max-w-4xl mx-auto w-full">
-      <header className="text-center mb-12 space-y-6 flex flex-col items-center">
-        <IFCELogo className="h-48 md:h-64" />
+    <div className="flex flex-col items-center justify-between min-h-screen p-4 md:p-8 max-w-5xl mx-auto w-full">
+      <header className="text-center mt-4 md:mt-8 space-y-4 flex flex-col items-center w-full">
+        <IFCELogo className="h-40 md:h-56 lg:h-64 w-auto" />
         <div className="space-y-2">
-          <p className="text-xl md:text-2xl text-muted-foreground font-medium">O que você achou do prato de hoje?</p>
+          <p className="text-xl md:text-3xl text-muted-foreground font-medium px-4">
+            O que você achou do prato de hoje?
+          </p>
         </div>
       </header>
 
-      <div className="relative w-full">
+      <div className="relative w-full flex-1 flex items-center justify-center py-8">
         {/* Success Overlay */}
         <div className={cn(
           "absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/95 transition-all duration-500 rounded-3xl",
@@ -45,13 +46,13 @@ export const FeedbackScreen = () => {
           <div className="bg-secondary/10 p-8 rounded-full mb-6">
             <CheckCircle2 className="w-24 h-24 text-secondary animate-bounce" />
           </div>
-          <h2 className="text-3xl font-bold text-primary text-center">Muito obrigado!</h2>
-          <p className="text-lg text-muted-foreground mt-2">Sua opinião ajuda a melhorar nossa cantina.</p>
+          <h2 className="text-3xl md:text-5xl font-bold text-primary text-center">Muito obrigado!</h2>
+          <p className="text-lg md:text-2xl text-muted-foreground mt-4">Sua opinião ajuda a melhorar nossa cantina.</p>
         </div>
 
         {/* Voting Grid */}
         <div className={cn(
-          "grid grid-cols-5 gap-4 md:gap-8 w-full transition-all duration-500",
+          "grid grid-cols-5 gap-3 md:gap-6 lg:gap-10 w-full transition-all duration-500",
           submitted ? "opacity-0 blur-sm pointer-events-none" : "opacity-100 blur-0"
         )}>
           {[1, 2, 3, 4, 5].map((val) => (
@@ -59,12 +60,12 @@ export const FeedbackScreen = () => {
               key={val}
               disabled={loading}
               onClick={() => handleRating(val)}
-              className="flex flex-col items-center gap-4 transition-transform hover:scale-105 active:scale-95 group focus:outline-none"
+              className="flex flex-col items-center gap-4 transition-transform hover:scale-105 active:scale-90 group focus:outline-none"
             >
-              <div className="w-full aspect-square max-w-[160px] drop-shadow-md group-hover:drop-shadow-xl transition-all">
+              <div className="w-full aspect-square max-w-[180px] drop-shadow-md group-hover:drop-shadow-2xl transition-all">
                 <EmojiFace rating={val} />
               </div>
-              <span className="hidden md:block font-bold text-muted-foreground group-hover:text-primary transition-colors text-center">
+              <span className="hidden sm:block font-bold text-sm md:text-lg text-muted-foreground group-hover:text-primary transition-colors text-center whitespace-nowrap">
                 {val === 1 && "Muito Ruim"}
                 {val === 2 && "Ruim"}
                 {val === 3 && "Médio"}
@@ -76,10 +77,12 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      <footer className="mt-20 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted rounded-full">
+      <footer className="mb-4 md:mb-8 text-center">
+        <div className="inline-flex items-center gap-2 px-6 py-3 bg-muted/50 rounded-full border border-border">
           <div className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
-          <span className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Totem de Avaliação IFCE Itapipoca</span>
+          <span className="text-xs md:text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            Totem de Avaliação IFCE Campus Itapipoca
+          </span>
         </div>
       </footer>
     </div>
