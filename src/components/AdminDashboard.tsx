@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { getDailyEvaluations, getAllEvaluations, Evaluation } from '@/lib/firebase';
+import { getDailyEvaluations, Evaluation } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { summarizeDailyFeedback } from '@/ai/flows/summarize-daily-feedback-flow';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Loader2, TrendingUp, Users, Star, MessageSquareQuote } from 'lucide-react';
 import { Button } from './ui/button';
-import { IFCELogo } from './IFCELogo';
 
 export const AdminDashboard = () => {
   const [dailyData, setDailyData] = useState<Evaluation[]>([]);
@@ -72,10 +71,13 @@ export const AdminDashboard = () => {
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-b pb-8">
-        <div className="flex items-center gap-4">
-          <IFCELogo className="h-24 md:h-32" />
+        <div className="flex items-center gap-6">
+          <h1 className="text-3xl font-black text-[#379936] tracking-tighter uppercase italic">
+            IFCE FoodScore
+          </h1>
+          <div className="h-10 w-px bg-border hidden md:block" />
           <div>
-            <h1 className="text-3xl font-bold text-primary">Painel da Cantina</h1>
+            <h1 className="text-2xl font-bold text-primary">Painel da Cantina</h1>
             <p className="text-muted-foreground">Visão geral do feedback dos estudantes</p>
           </div>
         </div>
