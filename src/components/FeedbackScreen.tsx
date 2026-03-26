@@ -8,11 +8,25 @@ import { collection, doc, setDoc } from 'firebase/firestore';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
-import { CheckCircle2, Heart, Loader2 } from 'lucide-react';
+import { CheckCircle2, Heart, Loader2, MessageSquareText } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 export const FeedbackScreen = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [feedbackContent, setFeedbackContent] = useState("");
+  const [isFeedbackModalOpen, setIsFeedbackFeedbackModalOpen] = useState(false);
+  
   const firestore = useFirestore();
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
@@ -27,7 +41,6 @@ export const FeedbackScreen = () => {
     if (loading || submitted || !firestore || !user) return;
     setLoading(true);
     
-    // Referência para a coleção definida no backend.json
     const ratingsCol = collection(firestore, "dailyMealRatings");
     const newDocRef = doc(ratingsCol);
     const now = new Date();
@@ -36,12 +49,11 @@ export const FeedbackScreen = () => {
     
     const ratingData = {
       id: newDocRef.id,
-      ratingValue: ratingValue, // Valor da avaliação (1-5)
-      ratingDate: dateStr,      // Data formatada para agrupamento (YYYY-MM-DD)
-      createdAt: fullTimestamp, // Horário exato da avaliação
+      ratingValue: ratingValue,
+      ratingDate: dateStr,
+      createdAt: fullTimestamp,
     };
 
-    // Operação não-bloqueante para agilidade no totem
     setDoc(newDocRef, ratingData)
       .then(() => {
         setSubmitted(true);
@@ -60,9 +72,45 @@ export const FeedbackScreen = () => {
       });
   };
 
+  const handleSendFeedback = () => {
+    if (!feedbackContent.trim() || !firestore || !user) return;
+    setLoading(true);
+
+    const feedbackCol = collection(firestore, "mealFeedbacks");
+    const newDocRef = doc(feedbackCol);
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    
+    const feedbackData = {
+      id: newDocRef.id,
+      content: feedbackContent,
+      ratingDate: dateStr,
+      createdAt: now.toISOString(),
+    };
+
+    setDoc(newDocRef, feedbackData)
+      .then(() => {
+        setFeedbackContent("");
+        setIsFeedbackFeedbackModalOpen(false);
+        setSubmitted(true);
+        setTimeout(() => setSubmitted(false), 3000);
+      })
+      .catch(async (err) => {
+        const permissionError = new FirestorePermissionError({
+          path: newDocRef.path,
+          operation: 'create',
+          requestResourceData: feedbackData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   return (
     <div className="relative h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Overlay de Sucesso Redimensionado para Tablet */}
+      {/* Overlay de Sucesso */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
           <div className="relative mb-4">
@@ -86,7 +134,7 @@ export const FeedbackScreen = () => {
       )}
 
       {/* Cabeçalho */}
-      <header className="shrink-0">
+      <header className="shrink-0 flex flex-col items-center">
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-primary tracking-tighter uppercase select-none leading-none">
           IFCE FoodScore
         </h1>
@@ -135,8 +183,45 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Rodapé fixo logo abaixo das carinhas */}
-      <footer className="shrink-0 mb-4 md:mb-6 mt-4">
+      {/* Rodapé com Botão de Feedback */}
+      <footer className="shrink-0 mb-4 md:mb-6 mt-6 flex flex-col items-center gap-4">
+        <Dialog open={isFeedbackModalOpen} onOpenChange={setIsFeedbackFeedbackModalOpen}>
+          <DialogTrigger asChild>
+            <Button 
+              variant="outline" 
+              className="rounded-full border-primary/30 text-primary hover:bg-primary hover:text-white transition-all gap-2 px-6 py-6 font-bold uppercase tracking-tight text-xs"
+            >
+              <MessageSquareText className="w-4 h-4" />
+              Sugestões ou Reclamações
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black uppercase text-primary">Sua opinião</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                Como podemos melhorar a nossa cantina? Escreva abaixo sua sugestão ou reclamação de forma anônima.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <Textarea 
+                placeholder="Escreva aqui sua mensagem..."
+                className="min-h-[150px] text-lg p-4 rounded-xl border-primary/20 focus-visible:ring-primary"
+                value={feedbackContent}
+                onChange={(e) => setFeedbackContent(e.target.value)}
+              />
+            </div>
+            <DialogFooter>
+              <Button 
+                onClick={handleSendFeedback} 
+                disabled={!feedbackContent.trim() || loading}
+                className="w-full font-bold uppercase py-6 text-lg"
+              >
+                {loading ? <Loader2 className="animate-spin mr-2" /> : "Enviar Feedback"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         <div className="inline-flex items-center gap-3 px-6 py-2 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
           <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
           <span className="text-[8px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest select-none">
