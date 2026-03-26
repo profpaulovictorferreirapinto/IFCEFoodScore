@@ -60,21 +60,21 @@ export const FeedbackScreen = () => {
       {/* Success Message Overlay */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-6 text-center">
-          <div className="relative mb-8 md:mb-12">
-            <div className="bg-[#379936]/10 p-12 md:p-16 rounded-full">
-              <CheckCircle2 className="w-32 h-32 md:w-64 md:h-64 text-[#379936]" />
+          <div className="relative mb-6 md:mb-10">
+            <div className="bg-[#379936]/10 p-8 md:p-12 rounded-full">
+              <CheckCircle2 className="w-24 h-24 md:w-40 md:h-40 text-[#379936]" />
             </div>
-            <Heart className="absolute -top-4 -right-4 w-12 h-12 md:w-24 md:h-24 text-destructive fill-destructive animate-bounce" />
+            <Heart className="absolute -top-2 -right-2 w-10 h-10 md:w-16 md:h-16 text-destructive fill-destructive animate-bounce" />
           </div>
           
-          <h2 className="text-5xl md:text-8xl lg:text-9xl font-black text-[#379936] tracking-tighter uppercase mb-4 md:mb-8 select-none leading-none">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-[#379936] tracking-tighter uppercase mb-4 md:mb-6 select-none leading-none">
             Muito obrigado!
           </h2>
-          <p className="text-xl md:text-4xl lg:text-5xl text-muted-foreground font-medium max-w-4xl leading-tight select-none">
+          <p className="text-lg md:text-2xl lg:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight select-none px-4">
             Sua opinião é fundamental para melhorarmos nosso serviço.
           </p>
 
-          <div className="mt-12 md:mt-20 h-3 md:h-4 w-64 md:w-[500px] bg-muted rounded-full overflow-hidden">
+          <div className="mt-8 md:mt-12 h-2 md:h-3 w-48 md:w-[400px] bg-muted rounded-full overflow-hidden">
             <div className="h-full bg-[#379936] animate-progress" />
           </div>
         </div>
@@ -98,10 +98,10 @@ export const FeedbackScreen = () => {
       </div>
 
       {/* Espaçador Inferior 2 - Maior peso para empurrar as carinhas mais para baixo */}
-      <div className="flex-[3]" />
+      <div className="flex-[4]" />
 
       {/* Grid de Carinhas - Posicionado na extremidade inferior */}
-      <div className="w-full max-w-7xl mx-auto px-4 mb-4">
+      <div className="w-full max-w-7xl mx-auto px-4 mb-2">
         <div className="grid grid-cols-5 gap-4 md:gap-10 lg:gap-14 w-full">
           {[1, 2, 3, 4, 5].map((val) => (
             <button
@@ -126,7 +126,7 @@ export const FeedbackScreen = () => {
       </div>
 
       {/* Rodapé - Posicionado logo abaixo das carinhas */}
-      <footer className="shrink-0 mb-4 md:mb-6">
+      <footer className="shrink-0 mb-4 md:mb-6 mt-4">
         <div className="inline-flex items-center gap-3 px-8 py-3 md:px-10 md:py-4 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
           <div className="w-3 h-3 md:w-4 md:h-4 bg-[#379936] rounded-full animate-pulse" />
           <span className="text-[10px] md:text-sm lg:text-base font-bold text-muted-foreground uppercase tracking-widest">
