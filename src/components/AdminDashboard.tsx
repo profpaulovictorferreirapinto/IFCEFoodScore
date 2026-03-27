@@ -31,7 +31,7 @@ import { ptBR } from 'date-fns/locale';
 
 export const AdminDashboard = () => {
   const firestore = useFirestore();
-  const [campusName, setCampusName] = useState("Itapipoca");
+  const [campusName, setCampusName] = useState("ITAPIPOCA");
 
   // Detecção de localização para o Dashboard
   useEffect(() => {
@@ -43,7 +43,7 @@ export const AdminDashboard = () => {
           const data = await response.json();
           const city = data.address.city || data.address.town || data.address.village || data.address.municipality;
           if (city) {
-            setCampusName(city);
+            setCampusName(city.toUpperCase());
           }
         } catch (error) {}
       });
@@ -229,7 +229,7 @@ export const AdminDashboard = () => {
               <TableRow className="hover:bg-transparent border-border/80">
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest">Data e Hora</TableHead>
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest">Campus</TableHead>
-                <TableHead className="font-bold uppercase text-[10px] tracking-widest">Período</TableHead>
+                <TableHead className="font-bold uppercase text-[10px] tracking-widest">Refeição</TableHead>
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest">Nota</TableHead>
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest text-right">Classificação</TableHead>
               </TableRow>
@@ -241,7 +241,7 @@ export const AdminDashboard = () => {
                     {r.createdAt ? format(new Date(r.createdAt), 'dd/MM/yyyy HH:mm:ss') : '-'}
                   </TableCell>
                   <TableCell className="text-[9px] font-bold uppercase text-muted-foreground">
-                    {r.campus || "Itapipoca"}
+                    {r.campus || "ITAPIPOCA"}
                   </TableCell>
                   <TableCell>
                     <span className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground px-2 py-1 bg-muted rounded-lg">

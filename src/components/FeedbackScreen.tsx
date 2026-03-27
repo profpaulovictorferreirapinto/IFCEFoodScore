@@ -26,7 +26,7 @@ export const FeedbackScreen = () => {
   const [feedbackContent, setFeedbackContent] = useState("");
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [period, setPeriod] = useState<string>("Lanche Manhã");
-  const [campusName, setCampusName] = useState("Itapipoca");
+  const [campusName, setCampusName] = useState("ITAPIPOCA");
   
   const firestore = useFirestore();
   const auth = useAuth();
@@ -43,21 +43,24 @@ export const FeedbackScreen = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Detecção de localização para definir o Campus
+  // Detecção de localização para definir o Campus dinamicamente
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         try {
           const { latitude, longitude } = position.coords;
+          // Uso da API Nominatim para geocodificação reversa
           const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`);
           const data = await response.json();
           const city = data.address.city || data.address.town || data.address.village || data.address.municipality;
           if (city) {
-            setCampusName(city);
+            setCampusName(city.toUpperCase());
           }
         } catch (error) {
-          // Mantém Itapipoca em caso de erro
+          // Mantém ITAPIPOCA se houver erro na API
         }
+      }, () => {
+        // Mantém ITAPIPOCA se o usuário negar permissão
       });
     }
   }, []);
