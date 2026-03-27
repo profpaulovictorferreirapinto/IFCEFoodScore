@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { EmojiFace } from './EmojiFace';
+import { IFCELogo } from './IFCELogo';
 import { useFirestore, useAuth, useUser } from '@/firebase';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
@@ -147,6 +148,11 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
+      {/* Logotipo IF no Canto Superior Esquerdo */}
+      <div className="absolute top-6 left-6 md:top-10 md:left-10 select-none">
+        <IFCELogo className="h-12 md:h-16 lg:h-20 w-auto opacity-90" />
+      </div>
+
       {/* Overlay de Sucesso */}
       {submitted && (
         <div className="fixed inset-0 z-[100] bg-background w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-10 text-center">
