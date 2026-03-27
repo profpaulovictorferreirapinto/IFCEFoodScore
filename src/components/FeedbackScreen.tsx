@@ -26,6 +26,7 @@ export const FeedbackScreen = () => {
   const [feedbackContent, setFeedbackContent] = useState("");
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [period, setPeriod] = useState<string>("Lanche Manhã");
+  const [campusName, setCampusName] = useState("Itapipoca");
   
   const firestore = useFirestore();
   const auth = useAuth();
@@ -40,6 +41,25 @@ export const FeedbackScreen = () => {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Detecção de localização para definir o Campus
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`);
+          const data = await response.json();
+          const city = data.address.city || data.address.town || data.address.village || data.address.municipality;
+          if (city) {
+            setCampusName(city);
+          }
+        } catch (error) {
+          // Mantém Itapipoca em caso de erro
+        }
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -63,12 +83,12 @@ export const FeedbackScreen = () => {
       ratingDate: dateStr,
       period: period,
       createdAt: now.toISOString(),
+      campus: campusName,
     };
 
     setDoc(newDocRef, ratingData)
       .then(() => {
         setSubmitted(true);
-        // Tempo ajustado para 4 segundos
         setTimeout(() => setSubmitted(false), 4000);
       })
       .catch(async (err) => {
@@ -98,6 +118,7 @@ export const FeedbackScreen = () => {
       content: feedbackContent,
       ratingDate: dateStr,
       createdAt: now.toISOString(),
+      campus: campusName,
     };
 
     setDoc(newDocRef, feedbackData)
@@ -105,7 +126,6 @@ export const FeedbackScreen = () => {
         setFeedbackContent("");
         setIsFeedbackModalOpen(false);
         setSubmitted(true);
-        // Tempo ajustado para 4 segundos
         setTimeout(() => setSubmitted(false), 4000);
       })
       .catch(async (err) => {
@@ -156,7 +176,7 @@ export const FeedbackScreen = () => {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
           <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
           <span className="text-[7px] md:text-[9px] font-bold text-muted-foreground uppercase tracking-widest select-none">
-            Totem de Avaliação • Campus Itapipoca
+            Totem de Avaliação • Campus {campusName}
           </span>
         </div>
       </header>
@@ -262,7 +282,7 @@ export const FeedbackScreen = () => {
         </Dialog>
       </footer>
 
-      {/* Crédito de Desenvolvimento - Posicionado um pouco mais acima (bottom-16) para visibilidade no tablet */}
+      {/* Crédito de Desenvolvimento */}
       <div className="absolute bottom-16 left-6 text-[7px] md:text-[9px] text-muted-foreground/40 font-bold uppercase tracking-widest select-none pointer-events-none text-left leading-tight">
         Desenvolvido por LaMMA <br className="md:hidden" /> (Laboratório Maker de Mecânica Aplicada)
       </div>

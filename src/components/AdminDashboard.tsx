@@ -1,7 +1,6 @@
-
 "use client";
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, limit } from 'firebase/firestore';
 import { 
@@ -32,6 +31,24 @@ import { ptBR } from 'date-fns/locale';
 
 export const AdminDashboard = () => {
   const firestore = useFirestore();
+  const [campusName, setCampusName] = useState("Itapipoca");
+
+  // Detecção de localização para o Dashboard
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`);
+          const data = await response.json();
+          const city = data.address.city || data.address.town || data.address.village || data.address.municipality;
+          if (city) {
+            setCampusName(city);
+          }
+        } catch (error) {}
+      });
+    }
+  }, []);
 
   const ratingsQuery = useMemoFirebase(() => 
     query(collection(firestore, "dailyMealRatings"), orderBy("createdAt", "desc"), limit(100)),
@@ -82,7 +99,7 @@ export const AdminDashboard = () => {
           </div>
           <div>
             <h1 className="text-3xl font-black text-primary uppercase tracking-tighter leading-none">
-              IFCE Campus Itapipoca
+              IFCE Campus {campusName}
             </h1>
             <p className="text-muted-foreground font-medium text-sm">
               Dashboard de Monitoramento de Refeições
@@ -183,6 +200,7 @@ export const AdminDashboard = () => {
                     <span className="text-[9px] font-black uppercase text-muted-foreground bg-white px-2 py-0.5 rounded-full border border-border/40">
                       {f.createdAt ? format(new Date(f.createdAt), 'dd MMM • HH:mm', { locale: ptBR }) : '-'}
                     </span>
+                    <span className="text-[7px] font-bold text-muted-foreground uppercase opacity-50">{f.campus}</span>
                   </div>
                   <p className="text-sm font-medium text-foreground leading-relaxed">{f.content}</p>
                 </div>
@@ -210,6 +228,7 @@ export const AdminDashboard = () => {
             <TableHeader>
               <TableRow className="hover:bg-transparent border-border/80">
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest">Data e Hora</TableHead>
+                <TableHead className="font-bold uppercase text-[10px] tracking-widest">Campus</TableHead>
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest">Período</TableHead>
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest">Nota</TableHead>
                 <TableHead className="font-bold uppercase text-[10px] tracking-widest text-right">Classificação</TableHead>
@@ -220,6 +239,9 @@ export const AdminDashboard = () => {
                 <TableRow key={r.id} className="border-border/40 hover:bg-muted/10 transition-colors">
                   <TableCell className="font-medium text-xs text-muted-foreground">
                     {r.createdAt ? format(new Date(r.createdAt), 'dd/MM/yyyy HH:mm:ss') : '-'}
+                  </TableCell>
+                  <TableCell className="text-[9px] font-bold uppercase text-muted-foreground">
+                    {r.campus || "Itapipoca"}
                   </TableCell>
                   <TableCell>
                     <span className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground px-2 py-1 bg-muted rounded-lg">
@@ -245,7 +267,7 @@ export const AdminDashboard = () => {
               ))}
               {(!ratings || ratings.length === 0) && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground italic">
+                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground italic">
                     Nenhum voto registrado ainda.
                   </TableCell>
                 </TableRow>
