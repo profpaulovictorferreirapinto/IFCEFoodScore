@@ -173,7 +173,7 @@ export const FeedbackScreen = () => {
       <header className="shrink-0 flex flex-col items-center mb-8 gap-4">
         <div className="flex items-center gap-1">
           <IFCELogo className="h-14 md:h-20 lg:h-24 w-auto ml-28" />
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none -ml-8">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none -ml-12">
             FoodScore
           </h1>
         </div>
