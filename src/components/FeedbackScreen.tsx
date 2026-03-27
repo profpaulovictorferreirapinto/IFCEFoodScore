@@ -22,12 +22,12 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 export const FeedbackScreen = () => {
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedbackContent, setFeedbackContent] = useState("");
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [period, setPeriod] = useState<string>("Lanche Manhã");
   const [campusName, setCampusName] = useState("DESCONHECIDO");
+  const [isSubmitted, setIsSubmitted] = useState(false);
   
   const firestore = useFirestore();
   const auth = useAuth();
@@ -72,7 +72,7 @@ export const FeedbackScreen = () => {
   }, [auth, user, isUserLoading]);
 
   const handleRating = (ratingValue: number) => {
-    if (loading || submitted || !firestore || !user) return;
+    if (loading || isSubmitted || !firestore || !user) return;
     setLoading(true);
     
     const ratingsCol = collection(firestore, "dailyMealRatings");
@@ -91,8 +91,8 @@ export const FeedbackScreen = () => {
 
     setDoc(newDocRef, ratingData)
       .then(() => {
-        setSubmitted(true);
-        setTimeout(() => setSubmitted(false), 4000);
+        setIsSubmitted(true);
+        setTimeout(() => setIsSubmitted(false), 4000);
       })
       .catch(async (err) => {
         const permissionError = new FirestorePermissionError({
@@ -128,8 +128,8 @@ export const FeedbackScreen = () => {
       .then(() => {
         setFeedbackContent("");
         setIsFeedbackModalOpen(false);
-        setSubmitted(true);
-        setTimeout(() => setSubmitted(false), 4000);
+        setIsSubmitted(true);
+        setTimeout(() => setIsSubmitted(false), 4000);
       })
       .catch(async (err) => {
         const permissionError = new FirestorePermissionError({
@@ -148,13 +148,13 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Logotipo IF no Canto Superior Esquerdo */}
+      {/* Logotipo IF no Canto Superior Esquerdo - Triplicado o tamanho */}
       <div className="absolute top-6 left-6 md:top-10 md:left-10 select-none">
-        <IFCELogo className="h-12 md:h-16 lg:h-20 w-auto opacity-90" />
+        <IFCELogo className="h-36 md:h-48 lg:h-60 w-auto opacity-90" />
       </div>
 
       {/* Overlay de Sucesso */}
-      {submitted && (
+      {isSubmitted && (
         <div className="fixed inset-0 z-[100] bg-background w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-10 text-center">
           <div className="relative mb-6">
             <div className="bg-primary/10 p-6 rounded-full shadow-[0_0_30px_rgba(55,153,54,0.1)]">
@@ -229,7 +229,7 @@ export const FeedbackScreen = () => {
           {[1, 2, 3, 4, 5].map((val) => (
             <button
               key={val}
-              disabled={loading || submitted || isUserLoading || !user}
+              disabled={loading || isSubmitted || isUserLoading || !user}
               onClick={() => handleRating(val)}
               className="flex flex-col items-center gap-2 md:gap-3 transition-all hover:scale-105 active:scale-95 group focus:outline-none disabled:opacity-50"
             >
