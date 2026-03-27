@@ -170,10 +170,10 @@ export const FeedbackScreen = () => {
         </div>
       )}
 
-      <header className="shrink-0 flex flex-col items-center mb-8 gap-4">
-        <div className="flex items-center gap-1">
-          <IFCELogo className="h-14 md:h-20 lg:h-24 w-auto ml-0" />
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none -ml-40">
+      <header className="shrink-0 flex flex-col items-center mb-8 gap-6">
+        <div className="flex flex-col items-center gap-4">
+          <IFCELogo className="h-24 md:h-32 lg:h-40 w-auto" />
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none">
             FoodScore
           </h1>
         </div>
@@ -187,8 +187,10 @@ export const FeedbackScreen = () => {
 
       <div className="shrink-0 flex flex-col items-center gap-4 mb-8">
         <div className="flex items-center gap-2 text-muted-foreground mb-1">
-          <Clock className="w-4 h-4" />
-          <span className="text-xs font-bold uppercase tracking-wider">Selecione a refeição que você quer avaliar:</span>
+          <div className="p-1.5 bg-muted/30 rounded-full">
+            <Clock className="w-4 h-4 text-primary" />
+          </div>
+          <span className="text-xs font-bold uppercase tracking-wider">Qual refeição você quer avaliar?</span>
         </div>
         <div className="flex flex-wrap justify-center p-1 bg-muted/30 rounded-2xl border border-border/40 gap-1">
           {periods.map((p) => (
