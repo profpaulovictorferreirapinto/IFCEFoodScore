@@ -176,7 +176,7 @@ export const FeedbackScreen = () => {
       {/* Cabeçalho */}
       <header className="shrink-0 flex flex-col items-center mb-8 gap-4">
         <div className="flex items-center gap-3 md:gap-4">
-          <IFCELogo className="h-14 md:h-20 lg:h-24 w-auto" />
+          <IFCELogo className="h-14 md:h-20 lg:h-24 w-auto ml-4" />
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none">
             FoodScore
           </h1>
