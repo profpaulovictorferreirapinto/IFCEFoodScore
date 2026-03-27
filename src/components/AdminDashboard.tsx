@@ -31,7 +31,7 @@ import { ptBR } from 'date-fns/locale';
 
 export const AdminDashboard = () => {
   const firestore = useFirestore();
-  const [campusName, setCampusName] = useState("ITAPIPOCA");
+  const [campusName, setCampusName] = useState("DESCONHECIDO");
 
   // Detecção de localização para o Dashboard
   useEffect(() => {
@@ -45,7 +45,11 @@ export const AdminDashboard = () => {
           if (city) {
             setCampusName(city.toUpperCase());
           }
-        } catch (error) {}
+        } catch (error) {
+          setCampusName("DESCONHECIDO");
+        }
+      }, () => {
+        setCampusName("DESCONHECIDO");
       });
     }
   }, []);
@@ -241,7 +245,7 @@ export const AdminDashboard = () => {
                     {r.createdAt ? format(new Date(r.createdAt), 'dd/MM/yyyy HH:mm:ss') : '-'}
                   </TableCell>
                   <TableCell className="text-[9px] font-bold uppercase text-muted-foreground">
-                    {r.campus || "ITAPIPOCA"}
+                    {r.campus || "DESCONHECIDO"}
                   </TableCell>
                   <TableCell>
                     <span className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground px-2 py-1 bg-muted rounded-lg">

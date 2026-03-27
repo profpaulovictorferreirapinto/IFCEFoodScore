@@ -26,7 +26,7 @@ export const FeedbackScreen = () => {
   const [feedbackContent, setFeedbackContent] = useState("");
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [period, setPeriod] = useState<string>("Lanche Manhã");
-  const [campusName, setCampusName] = useState("ITAPIPOCA");
+  const [campusName, setCampusName] = useState("DESCONHECIDO");
   
   const firestore = useFirestore();
   const auth = useAuth();
@@ -49,7 +49,6 @@ export const FeedbackScreen = () => {
       navigator.geolocation.getCurrentPosition(async (position) => {
         try {
           const { latitude, longitude } = position.coords;
-          // Uso da API Nominatim para geocodificação reversa
           const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`);
           const data = await response.json();
           const city = data.address.city || data.address.town || data.address.village || data.address.municipality;
@@ -57,10 +56,10 @@ export const FeedbackScreen = () => {
             setCampusName(city.toUpperCase());
           }
         } catch (error) {
-          // Mantém ITAPIPOCA se houver erro na API
+          setCampusName("DESCONHECIDO");
         }
       }, () => {
-        // Mantém ITAPIPOCA se o usuário negar permissão
+        setCampusName("DESCONHECIDO");
       });
     }
   }, []);
