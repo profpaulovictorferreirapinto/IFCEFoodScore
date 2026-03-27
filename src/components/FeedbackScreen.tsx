@@ -263,8 +263,8 @@ export const FeedbackScreen = () => {
         </div>
       </footer>
 
-      {/* Crédito de Desenvolvimento - Posicionado um pouco mais acima para visibilidade no tablet */}
-      <div className="absolute bottom-10 right-6 text-[7px] md:text-[9px] text-muted-foreground/40 font-bold uppercase tracking-widest select-none pointer-events-none text-right leading-tight">
+      {/* Crédito de Desenvolvimento - Posicionado um pouco mais acima (bottom-16) para visibilidade no tablet */}
+      <div className="absolute bottom-16 right-6 text-[7px] md:text-[9px] text-muted-foreground/40 font-bold uppercase tracking-widest select-none pointer-events-none text-right leading-tight">
         Desenvolvido por LaMMA <br className="md:hidden" /> (Laboratório Maker de Mecânica Aplicada)
       </div>
     </div>
