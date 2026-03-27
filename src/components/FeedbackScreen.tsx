@@ -34,7 +34,6 @@ export const FeedbackScreen = () => {
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
 
-  // Bloqueio do botão "Voltar" do navegador
   useEffect(() => {
     window.history.pushState(null, "", window.location.href);
     const handlePopState = () => {
@@ -45,7 +44,6 @@ export const FeedbackScreen = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Detecção de localização para definir o Campus dinamicamente
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(async (position) => {
@@ -150,7 +148,6 @@ export const FeedbackScreen = () => {
   return (
     <div className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
       
-      {/* Overlay de Sucesso */}
       {isSubmitted && (
         <div className="fixed inset-0 z-[100] bg-background w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-10 text-center">
           <div className="relative mb-6">
@@ -173,10 +170,9 @@ export const FeedbackScreen = () => {
         </div>
       )}
 
-      {/* Cabeçalho */}
       <header className="shrink-0 flex flex-col items-center mb-8 gap-4">
         <div className="flex items-center gap-3 md:gap-4">
-          <IFCELogo className="h-14 md:h-20 lg:h-24 w-auto ml-12" />
+          <IFCELogo className="h-14 md:h-20 lg:h-24 w-auto ml-28" />
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none">
             FoodScore
           </h1>
@@ -189,7 +185,6 @@ export const FeedbackScreen = () => {
         </div>
       </header>
 
-      {/* Seletor de Refeição */}
       <div className="shrink-0 flex flex-col items-center gap-4 mb-8">
         <div className="flex items-center gap-2 text-muted-foreground mb-1">
           <Clock className="w-4 h-4" />
@@ -214,7 +209,6 @@ export const FeedbackScreen = () => {
 
       <div className="flex-1" />
 
-      {/* Pergunta Centralizada */}
       <div className="shrink-0 flex flex-col items-center justify-center py-4">
         <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground font-medium px-4 text-center leading-tight select-none">
           O que você achou da refeição de hoje?
@@ -223,7 +217,6 @@ export const FeedbackScreen = () => {
 
       <div className="flex-1" />
 
-      {/* Grid de Carinhas */}
       <div className="w-full max-w-6xl mx-auto px-4 mb-8">
         <div className="grid grid-cols-5 gap-4 md:gap-6 lg:gap-8 w-full">
           {[1, 2, 3, 4, 5].map((val) => (
@@ -248,7 +241,6 @@ export const FeedbackScreen = () => {
         </div>
       </div>
 
-      {/* Rodapé */}
       <footer className="shrink-0 flex flex-col items-center gap-4 mt-auto pb-6">
         <Dialog open={isFeedbackModalOpen} onOpenChange={setIsFeedbackModalOpen}>
           <DialogTrigger asChild>
@@ -290,7 +282,6 @@ export const FeedbackScreen = () => {
         </Dialog>
       </footer>
 
-      {/* Crédito de Desenvolvimento */}
       <div className="absolute bottom-16 left-6 text-[7px] md:text-[9px] text-muted-foreground/40 font-bold uppercase tracking-widest select-none pointer-events-none text-left leading-tight">
         Desenvolvido por LaMMA <br className="md:hidden" /> (Laboratório Maker de Mecânica Aplicada)
       </div>
