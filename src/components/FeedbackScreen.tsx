@@ -149,10 +149,16 @@ export const FeedbackScreen = () => {
       )}
 
       {/* Cabeçalho */}
-      <header className="shrink-0 flex flex-col items-center mb-8">
+      <header className="shrink-0 flex flex-col items-center mb-8 gap-3">
         <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter uppercase select-none leading-none">
           IFCE FoodScore
         </h1>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
+          <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+          <span className="text-[7px] md:text-[9px] font-bold text-muted-foreground uppercase tracking-widest select-none">
+            Totem de Avaliação • Campus Itapipoca
+          </span>
+        </div>
       </header>
 
       {/* Seletor de Refeição */}
@@ -254,16 +260,9 @@ export const FeedbackScreen = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
-          <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-          <span className="text-[7px] md:text-[9px] font-bold text-muted-foreground uppercase tracking-widest select-none">
-            Totem de Avaliação • Campus Itapipoca
-          </span>
-        </div>
       </footer>
 
-      {/* Crédito de Desenvolvimento - Posicionado no canto inferior esquerdo e um pouco mais acima para visibilidade no tablet */}
+      {/* Crédito de Desenvolvimento - Posicionado um pouco mais acima (bottom-16) para visibilidade no tablet */}
       <div className="absolute bottom-16 left-6 text-[7px] md:text-[9px] text-muted-foreground/40 font-bold uppercase tracking-widest select-none pointer-events-none text-left leading-tight">
         Desenvolvido por LaMMA <br className="md:hidden" /> (Laboratório Maker de Mecânica Aplicada)
       </div>
