@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -148,11 +149,7 @@ export const FeedbackScreen = () => {
 
   return (
     <div className="relative min-h-screen w-full bg-background overflow-hidden flex flex-col items-center p-6 md:p-10">
-      {/* Logotipo IF no Canto Superior Esquerdo - Triplicado o tamanho */}
-      <div className="absolute top-6 left-6 md:top-10 md:left-10 select-none">
-        <IFCELogo className="h-36 md:h-48 lg:h-60 w-auto opacity-90" />
-      </div>
-
+      
       {/* Overlay de Sucesso */}
       {isSubmitted && (
         <div className="fixed inset-0 z-[100] bg-background w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300 px-10 text-center">
@@ -177,10 +174,13 @@ export const FeedbackScreen = () => {
       )}
 
       {/* Cabeçalho */}
-      <header className="shrink-0 flex flex-col items-center mb-8 gap-3">
-        <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter uppercase select-none leading-none">
-          IFCE FoodScore
-        </h1>
+      <header className="shrink-0 flex flex-col items-center mb-8 gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
+          <IFCELogo className="h-14 md:h-20 lg:h-24 w-auto" />
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none">
+            FoodScore
+          </h1>
+        </div>
         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
           <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
           <span className="text-[7px] md:text-[9px] font-bold text-muted-foreground uppercase tracking-widest select-none">
