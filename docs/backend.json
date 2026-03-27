@@ -1,4 +1,3 @@
-
 {
   "entities": {
     "DailyMealRating": {
@@ -24,6 +23,10 @@
           "type": "string",
           "description": "The meal period (Lanche Manhã, Almoço, Lanche Tarde, Lanche Noite).",
           "enum": ["Lanche Manhã", "Almoço", "Lanche Tarde", "Lanche Noite"]
+        },
+        "campus": {
+          "type": "string",
+          "description": "The campus name where the rating was made."
         },
         "createdAt": {
           "type": "string",
@@ -55,6 +58,9 @@
         "ratingDate": {
           "type": "string",
           "format": "date"
+        },
+        "campus": {
+          "type": "string"
         },
         "createdAt": {
           "type": "string",
