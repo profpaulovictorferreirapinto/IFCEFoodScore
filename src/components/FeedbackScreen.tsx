@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { EmojiFace } from './EmojiFace';
-import { IFCELogo } from './IFCELogo';
 import { useFirestore, useAuth, useUser } from '@/firebase';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
@@ -172,7 +171,6 @@ export const FeedbackScreen = () => {
 
       <header className="shrink-0 flex flex-col items-center mb-8 gap-4 w-full">
         <div className="flex flex-col items-center justify-center w-full">
-          <IFCELogo className="h-40 ml-28 mb-2" />
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none text-center"> 
             FoodScore </h1>
         </div>
