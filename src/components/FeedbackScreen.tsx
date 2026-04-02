@@ -172,7 +172,7 @@ export const FeedbackScreen = () => {
       <header className="shrink-0 flex flex-col items-center mb-8 gap-4 w-full">
         <div className="flex flex-col items-center justify-center w-full">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none text-center"> 
-            FoodScore </h1>
+            IFCE FoodScore </h1>
         </div>
         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
           <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
