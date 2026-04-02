@@ -172,17 +172,14 @@ export const FeedbackScreen = () => {
 
       <header className="shrink-0 flex flex-col items-center mb-8 gap-4 w-full">
         <div className="flex flex-col items-center justify-center w-full">
-          <div className="ml-28 mb-2">
-            <IFCELogo className="h-40 md:h-48 lg:h-64 w-auto" />
-          </div>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none text-center">
-            FoodScore
-          </h1>
+          <IFCELogo className="h-40 ml-28 mb-2" />
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary tracking-tighter uppercase select-none leading-none text-center"> 
+            FoodScore </h1>
         </div>
         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-muted/20 rounded-full border border-border/40 backdrop-blur-sm shadow-sm">
           <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
           <span className="text-[7px] md:text-[9px] font-bold text-muted-foreground uppercase tracking-widest select-none">
-            Totem de Avaliação • Campus {campusName}
+            Totem de Avaliação • IFCE Campus {campusName}
           </span>
         </div>
       </header>
@@ -285,10 +282,10 @@ export const FeedbackScreen = () => {
           </DialogContent>
         </Dialog>
       </footer>
-
       <div className="absolute bottom-16 left-6 text-[7px] md:text-[9px] text-muted-foreground/40 font-bold uppercase tracking-widest select-none pointer-events-none text-left leading-tight">
         Desenvolvido por LaMMA <br className="md:hidden" /> (Laboratório Maker de Mecânica Aplicada)
       </div>
+
     </div>
   );
 };
