@@ -1,10 +1,27 @@
-import type {Metadata} from 'next';
+
+import type {Metadata, Viewport} from 'next';
 import './globals.css';
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'IFCE - Avaliação de Refeições',
+  title: 'IFCE FoodScore',
   description: 'Sistema de avaliação de refeições do IFCE Campus Itapipoca',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'IFCE FoodScore',
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#379936',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
